@@ -21,7 +21,6 @@ import { OwnerWizard, QuyCheModal, DataProtectionPolicy, FaqModal, CommunityModa
 import { TopUpModal, UpgradeModal } from './modules/Payment/Tokens.jsx';
 
 import { AdminDashboard } from './admin.jsx';
-import { DemoScreen } from './demo.jsx';
 
 export default RootApp;
 
@@ -49,8 +48,16 @@ function App() {
   const [carLimit, setCarLimit] = useState(20);
   const [hasMoreCars, setHasMoreCars] = useState(true);
   const [loading, setLoading] = useState(true);
-  const initTab = (window.location.pathname.length > 1 || window.location.search) ? "overview" : "landing";
-  const [activeTab, setActiveTab] = useState(initTab);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = useMemo(() => {
+    if (location.pathname === '/dang-xe') return 'add';
+    if (location.pathname === '/cai-dat') return 'account';
+    if (location.pathname === '/admin') return 'admin';
+    if (location.pathname === '/trang-chu') return 'overview';
+    if (location.pathname.startsWith('/xe/')) return 'overview';
+    return 'landing';
+  }, [location.pathname]);
   const [editingId, setEditingId] = useState(null);
   
   const [showFaq, setShowFaq] = useState(false);
@@ -822,7 +829,6 @@ function LandingPage({ onExplore }) {
 function RootApp() {
   const [toast, setToast] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
-  const [showDemo, setShowDemo] = useState(false);
 
   useEffect(() => {
     window.showAlert = (msg) => {
@@ -855,85 +861,9 @@ function RootApp() {
             </div>
           </div>
         </div>
-      )}
-      <DebugPanel />
-      <button onClick={() => setShowDemo(true)} style={{ position: 'fixed', bottom: 16, right: 16, zIndex: 100000, background: '#8b5cf6', color: 'white', border: 'none', borderRadius: 50, padding: '10px 20px', fontWeight: 600, boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)', cursor: 'pointer' }}>✨ Demo Module</button>
-      {showDemo && <DemoScreen onClose={() => setShowDemo(false)} />}
+      )} />}
     </>
   );
 }
 
 export { RootApp };
-
-function DebugPanel() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [logs, setLogs] = useState([]);
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const unsub = auth.onAuthStateChanged(user => {
-      setShow(user && ADMIN_EMAILS.includes(user.email));
-    });
-    
-    window.appLog = (level, message) => {
-      const entry = { time: new Date(), level, message };
-      setLogs(prev => [...prev, entry]);
-      console.log(`[${level.toUpperCase()}] ${message}`);
-    };
-    window.appLog('info', 'App initialized');
-
-    const handleGlobalClick = (e) => {
-      // Don't log clicks inside the debug panel itself to avoid spam
-      if (e.target.closest && e.target.closest('#debug-panel-container')) return;
-
-      const tag = e.target.tagName;
-      const text = e.target.innerText ? e.target.innerText.slice(0, 20) : '';
-      window.appLog('click', `Clicked ${tag} ${text ? `"${text}"` : ''}`);
-    };
-    window.addEventListener('click', handleGlobalClick, true);
-
-    return () => {
-      unsub();
-      window.removeEventListener('click', handleGlobalClick, true);
-      delete window.appLog;
-    };
-  }, []);
-
-  if (!show) return null;
-
-  if (!isOpen) {
-    return (
-      <button 
-        style={{ position: 'fixed', bottom: 16, left: 16, zIndex: 100000, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)' }}
-        onClick={() => setIsOpen(true)}
-        title="Hiển thị Debug Logs"
-      >
-        <Info size={18} />
-      </button>
-    );
-  }
-
-  return (
-    <div id="debug-panel-container" style={{ position: 'fixed', bottom: 16, left: 16, width: 350, maxHeight: 400, background: '#1e1e1e', color: '#fff', zIndex: 100000, borderRadius: 8, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', fontSize: 12, fontFamily: 'monospace' }}>
-      <div style={{ padding: '8px 12px', borderBottom: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#2d2d2d', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
-        <strong>System Logs</strong>
-        <div>
-          <button style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', marginRight: 12 }} onClick={() => setLogs([])}>Clear</button>
-          <button style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer' }} onClick={() => setIsOpen(false)}><X size={14} /></button>
-        </div>
-      </div>
-      <div style={{ flex: 1, overflowY: 'auto', padding: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {logs.map((log, i) => (
-          <div key={i} style={{ color: log.level === 'error' ? '#ef4444' : log.level === 'success' ? '#22c55e' : '#e2e8f0', borderBottom: '1px solid #333', paddingBottom: 4 }}>
-            <span style={{ color: '#888', marginRight: 8 }}>{log.time.toLocaleTimeString()}</span>
-            {log.message}
-          </div>
-        ))}
-        {logs.length === 0 && <div style={{ color: '#888', textAlign: 'center', padding: 20 }}>Không có log nào</div>}
-      </div>
-    </div>
-  );
-}
-
-export { DebugPanel };
-
