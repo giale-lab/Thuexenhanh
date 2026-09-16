@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
@@ -6,7 +7,7 @@ import imageCompression from "browser-image-compression";
 import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where, limit, orderBy } from "firebase/firestore";
 import "./styles.css";
-import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
+import { generateSlug, isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
 
 import { AppLogo, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel } from './modules/Shared/UIKit.jsx';
 import { SearchLocationPicker, LocationPicker, MapModal, ErrorBoundary, handleOpenMap } from './modules/Shared/Location.jsx';
@@ -195,7 +196,7 @@ function App() {
         return;
       }
       if (activeTabRef.current !== "overview") {
-        setActiveTab("overview");
+        navigate('/trang-chu');
         window.history.pushState({ appInit: true }, "");
         return;
       }
@@ -218,7 +219,7 @@ function App() {
     }
     if (!currentUser?.email || !currentUser?.phone || !currentUser?.cccdNumber) {
       window.showAlert("Vui lòng cập nhật đầy đủ Email, SĐT và CCCD trong mục Cá nhân trước.");
-      setActiveTab("account");
+      navigate('/cai-dat');
       return false;
     }
     return true;
@@ -379,6 +380,9 @@ function App() {
   };
 
   const handleSaveCar = async (car) => {
+    if (!car.slug) {
+      car.slug = generateSlug(car.basicInfo.brand + ' ' + car.basicInfo.model);
+    }
     try {
       if (currentUser?.role === 'owner') {
         if (!currentUser.cccdNumber || !currentUser.cccdImage) {
@@ -444,7 +448,7 @@ function App() {
         }
       }
       setEditingId(null);
-      setActiveTab("overview");
+      navigate('/trang-chu');
     } catch (err) {
       window.showAlert("Lỗi lưu thông tin xe: " + err.message);
     }
@@ -454,7 +458,7 @@ function App() {
 
   useEffect(() => {
     if (!adminMode && activeTab === "add") {
-      setActiveTab("overview");
+      navigate('/trang-chu');
       setEditingId(null);
     }
   }, [adminMode, activeTab]);
@@ -482,7 +486,7 @@ function App() {
       onLogin={(user) => {
           setCurrentUser(user);
           localStorage.setItem("web-thue-xe-user", JSON.stringify(user));
-          setActiveTab("overview");
+          navigate('/trang-chu');
         }} 
     />;
   }
@@ -506,13 +510,13 @@ function App() {
           onViewDetails={() => {
             setPolicyGate(null);
             setCurrentView("policy_details");
-            setActiveTab("account");
+            navigate('/cai-dat');
           }}
         />
       )}
       {/* ── HEADER ── */}
       <ModuleFrame className="topbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => setActiveTab("landing")}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => navigate('/')}>
           
           <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "flex-start", height: 44 }}><img src={"/logo.png"} alt="Logo" style={{ width: 'auto', height: '100%', objectFit: 'contain' }} /></div>
           <div>
@@ -532,7 +536,7 @@ function App() {
             alt="Avatar" 
             referrerPolicy="no-referrer"
             style={{ width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', objectFit: 'cover' }} 
-            onClick={() => setActiveTab("account")}
+            onClick={() => navigate('/cai-dat')}
             title="Cài đặt tài khoản"
           />
           <button className="icon-button" title="Đăng xuất" onClick={() => {
@@ -544,7 +548,7 @@ function App() {
               }
               localStorage.removeItem("web-thue-xe-user");
               setCurrentUser(null);
-              setActiveTab("overview");
+              navigate('/trang-chu');
             });
           }}>
             <LogOut size={18} />
@@ -555,7 +559,7 @@ function App() {
       {/* ── TABS ── */}
       {activeTab !== "account" && activeTab !== "admin" && (adminMode || currentUser?.role === 'admin') && (
         <ModuleFrame className="tabs">
-        <button id="tab-overview" className={activeTab === "overview" ? "selected" : ""} onClick={() => setActiveTab("overview")}>
+        <button id="tab-overview" className={activeTab === "overview" ? "selected" : ""} onClick={() => navigate('/trang-chu')}>
             <LayoutGrid size={17} />
             {adminMode ? "Xe của tôi" : "Danh sách xe"}
           </button>
@@ -563,7 +567,7 @@ function App() {
             <button id="tab-add" className={activeTab === "add" ? "selected" : ""} onClick={() => {
               window.requirePolicyGate(() => {
                 if (checkProfileForOwner()) {
-                  setActiveTab("add");
+                  navigate('/dang-xe');
                 }
               });
             }}>
@@ -571,7 +575,7 @@ function App() {
             </button>
           )}
           {currentUser.role === 'admin' && (
-            <button id="tab-admin" className={activeTab === "admin" ? "selected" : ""} onClick={() => setActiveTab("admin")} style={activeTab === 'admin' ? {} : { color: 'var(--m-mid)' }}>
+            <button id="tab-admin" className={activeTab === "admin" ? "selected" : ""} onClick={() => navigate('/admin')} style={activeTab === 'admin' ? {} : { color: 'var(--m-mid)' }}>
               <Shield size={17} /> Trang Admin
             </button>
           )}
@@ -580,7 +584,7 @@ function App() {
       )}
 
       {activeTab === "landing" && (
-        <LandingPage onExplore={() => setActiveTab("overview")} />
+        <LandingPage onExplore={() => navigate('/trang-chu')} />
       )}
       
       {activeTab === "overview" && (
@@ -594,7 +598,7 @@ function App() {
             window.requirePolicyGate(() => {
               if (checkProfileForOwner()) {
                 setEditingId(id);
-                setActiveTab("add");
+                navigate('/dang-xe');
               }
             });
           }}
@@ -681,12 +685,12 @@ function App() {
       )}
       
       {activeTab === "add" && (
-        <AddCarForm editingCar={editingCar} currentUser={currentUser} onSave={handleSaveCar} onCancel={() => { setEditingId(null); setActiveTab("overview"); }} />
+        <AddCarForm editingCar={editingCar} currentUser={currentUser} onSave={handleSaveCar} onCancel={() => { setEditingId(null); navigate('/trang-chu'); }} />
       )}
 
       {activeTab === "admin" && (
         <ErrorBoundary>
-          <AdminDashboard cars={cars} currentUser={currentUser} onClose={() => setActiveTab("overview")} onDeleteCar={handleDeleteCarGlobal} />
+          <AdminDashboard cars={cars} currentUser={currentUser} onClose={() => navigate('/trang-chu')} onDeleteCar={handleDeleteCarGlobal} />
         </ErrorBoundary>
       )}
 
@@ -707,8 +711,8 @@ function App() {
           user={currentUser} 
           cars={cars}
           onToggleFavorite={toggleFavorite}
-          onClose={() => setActiveTab("overview")} 
-          onAdmin={() => setActiveTab("admin")}
+          onClose={() => navigate('/trang-chu')} 
+          onAdmin={() => navigate('/admin')}
           onSave={(updatedUser) => {
             setCurrentUser(updatedUser);
             localStorage.setItem("web-thue-xe-user", JSON.stringify(updatedUser));

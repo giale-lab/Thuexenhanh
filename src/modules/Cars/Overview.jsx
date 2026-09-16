@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
@@ -16,14 +17,25 @@ import { DateTimePickerModal } from './CarForm.jsx';
 
 function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, showFavorites, onEdit, onDelete, onDuplicate, onStatus, onToggleFavorite, onRequestLocation }) {
   const [query, setQuery] = useState("");
+  const { slugId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Parse query from URL search params instead of pathname
   useEffect(() => {
-    const path = window.location.pathname.substring(1);
-    if (path && path.length > 0) {
-      setQuery(decodeURIComponent(path));
-      window.history.replaceState(null, '', '/');
+    const searchParams = new URLSearchParams(location.search);
+    const q = searchParams.get('q');
+    if (q) {
+      setQuery(q);
     }
-  }, []);
-  const [selectedCar, setSelectedCar] = useState(null);
+  }, [location.search]);
+
+  // selectedCar is now driven by slugId from URL
+  const selectedCar = useMemo(() => {
+    if (!slugId) return null;
+    const id = slugId.split('--').pop();
+    return cars.find(c => c.id === id) || null;
+  }, [slugId, cars]);
   const [verifiedOwnerIds, setVerifiedOwnerIds] = useState(new Set());
 
   useEffect(() => {
@@ -298,7 +310,7 @@ function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, sho
                 liked={likedCars.includes(car.id)}
                 likeCount={(car.status?.popularity || 0) || 0}
                 onToggleLike={() => onToggleFavorite(car.id)}
-                onView={setSelectedCar} onMap={handleOpenMap} onEdit={onEdit} onDelete={onDelete} onDuplicate={onDuplicate} onStatus={onStatus} />
+                onView={(car) => navigate('/xe/' + (car.slug ? car.slug + '--' : '') + car.id)} onMap={handleOpenMap} onEdit={onEdit} onDelete={onDelete} onDuplicate={onDuplicate} onStatus={onStatus} />
               
               {/* Banner Quảng Cáo sau mỗi 10 xe */}
               {(index + 1) % 10 === 0 && (
@@ -318,7 +330,7 @@ function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, sho
         )}
       </ModuleFrame>
 
-{selectedCar && <CarDetailModal car={selectedCar} isWeekend={isWeekend} rentalTimeRange={rentalTimeRange} adminMode={adminMode} currentUser={currentUser} onMap={handleOpenMap} onClose={() => setSelectedCar(null)} onEdit={(id) => { setSelectedCar(null); onEdit(id); }} ownerCarCount={cars.filter(c => c.ownerId === selectedCar.ownerId).length} onViewOwner={() => { window.history.pushState({ filter: "owner" }, ""); setFilters(f => ({ ...f, owner: { id: selectedCar.ownerId, name: getOwnerInfo(selectedCar).name } })); setSelectedCar(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
+{selectedCar && <CarDetailModal car={selectedCar} isWeekend={isWeekend} rentalTimeRange={rentalTimeRange} adminMode={adminMode} currentUser={currentUser} onMap={handleOpenMap} onClose={() => navigate('/')} onEdit={(id) => { navigate('/'); onEdit(id); }} ownerCarCount={cars.filter(c => c.ownerId === selectedCar.ownerId).length} onViewOwner={() => { window.history.pushState({ filter: "owner" }, ""); setFilters(f => ({ ...f, owner: { id: selectedCar.ownerId, name: getOwnerInfo(selectedCar).name } })); navigate('/'); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
       {isTimePickerOpen && (
         <DateTimePickerModal
           initialStart={rentalTimeRange.startDate}

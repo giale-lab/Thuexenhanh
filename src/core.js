@@ -1,4 +1,4 @@
-import imageCompression from 'browser-image-compression';
+﻿import imageCompression from 'browser-image-compression';
 import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 
@@ -60,7 +60,7 @@ const brandOptions = Object.keys(carModelsData);
 
 export { brandOptions };
 
-const colorOptions = ["Trắng", "Đen", "Bạc", "Đỏ", "Xám", "Xanh lam", "Vàng", "Nâu", "Khác"];
+const colorOptions = ["Tráº¯ng", "Äen", "Báº¡c", "Äá»", "XÃ¡m", "Xanh lam", "VÃ ng", "NÃ¢u", "KhÃ¡c"];
 
 export { colorOptions };
 
@@ -72,34 +72,34 @@ const yearOptions = Array.from({length: new Date().getFullYear() - 1999}, (_, i)
 
 export { yearOptions };
 
-const bodyStyleOptions = ["Đô thị", "Gia đình", "Gầm cao", "Du lịch", "Công tác", "Dịch vụ"];
+const bodyStyleOptions = ["ÄÃ´ thá»‹", "Gia Ä‘Ã¬nh", "Gáº§m cao", "Du lá»‹ch", "CÃ´ng tÃ¡c", "Dá»‹ch vá»¥"];
 
 export { bodyStyleOptions };
 
 const AMENITY_OPTIONS = [
-  "Bản đồ VM", "Camera 360", "Cam hành trình", "Cam lùi", "Cảm biến lốp", "GPS", "ETC", "Túi khí", "Lốp dự phòng", "Cảm biến va chạm", "Cửa sổ trời", "ADAS", "Ghế da"
+  "Báº£n Ä‘á»“ VM", "Camera 360", "Cam hÃ nh trÃ¬nh", "Cam lÃ¹i", "Cáº£m biáº¿n lá»‘p", "GPS", "ETC", "TÃºi khÃ­", "Lá»‘p dá»± phÃ²ng", "Cáº£m biáº¿n va cháº¡m", "Cá»­a sá»• trá»i", "ADAS", "Gháº¿ da"
 ];
 
 export { AMENITY_OPTIONS };
 
 const provinceDistricts = {
-  "TP.HCM": ["Quận 1","Quận 3","Quận 4","Quận 5","Quận 6","Quận 7","Quận 8","Quận 10","Quận 11","Quận 12","Bình Thạnh","Gò Vấp","Phú Nhuận","Tân Bình","Tân Phú","Bình Tân","Bình Chánh","Cần Giờ","Củ Chi","Hóc Môn","Nhà Bè","Thủ Đức","TP.Thủ Đức"],
-  "Hà Nội": ["Hoàn Kiếm","Ba Đình","Đống Đa","Hai Bà Trưng","Hoàng Mai","Long Biên","Tây Hồ","Cầu Giấy","Thanh Xuân","Hà Đông","Đông Anh","Gia Lâm","Sóc Sơn","Từ Liêm","Thường Tín","Mê Linh"],
-  "Đà Nẵng": ["Hải Châu","Thanh Khê","Liên Chiểu","Ngũ Hành Sơn","Sơn Trà","Cẩm Lệ","Hòa Vang"],
-  "Hải Phòng": ["Hồng Bàng","Ngô Quyền","Lê Chân","Kiến An","Hải An","Đồ Sơn","Dương Kinh","Thuỷ Nguyên","An Dương","An Lão","Kiến Thụy","Tiên Lãng","Vĩnh Bảo","Cát Hải"],
-  "Cần Thơ": ["Ninh Kiều","Bình Thủy","Cái Răng","Ô Môn","Thốt Nốt","Phong Điền","Cờ Đỏ","Thới Lai","Vĩnh Thạnh"]
+  "TP.HCM": ["Quáº­n 1","Quáº­n 3","Quáº­n 4","Quáº­n 5","Quáº­n 6","Quáº­n 7","Quáº­n 8","Quáº­n 10","Quáº­n 11","Quáº­n 12","BÃ¬nh Tháº¡nh","GÃ² Váº¥p","PhÃº Nhuáº­n","TÃ¢n BÃ¬nh","TÃ¢n PhÃº","BÃ¬nh TÃ¢n","BÃ¬nh ChÃ¡nh","Cáº§n Giá»","Cá»§ Chi","HÃ³c MÃ´n","NhÃ  BÃ¨","Thá»§ Äá»©c","TP.Thá»§ Äá»©c"],
+  "HÃ  Ná»™i": ["HoÃ n Kiáº¿m","Ba ÄÃ¬nh","Äá»‘ng Äa","Hai BÃ  TrÆ°ng","HoÃ ng Mai","Long BiÃªn","TÃ¢y Há»“","Cáº§u Giáº¥y","Thanh XuÃ¢n","HÃ  ÄÃ´ng","ÄÃ´ng Anh","Gia LÃ¢m","SÃ³c SÆ¡n","Tá»« LiÃªm","ThÆ°á»ng TÃ­n","MÃª Linh"],
+  "ÄÃ  Náºµng": ["Háº£i ChÃ¢u","Thanh KhÃª","LiÃªn Chiá»ƒu","NgÅ© HÃ nh SÆ¡n","SÆ¡n TrÃ ","Cáº©m Lá»‡","HÃ²a Vang"],
+  "Háº£i PhÃ²ng": ["Há»“ng BÃ ng","NgÃ´ Quyá»n","LÃª ChÃ¢n","Kiáº¿n An","Háº£i An","Äá»“ SÆ¡n","DÆ°Æ¡ng Kinh","Thuá»· NguyÃªn","An DÆ°Æ¡ng","An LÃ£o","Kiáº¿n Thá»¥y","TiÃªn LÃ£ng","VÄ©nh Báº£o","CÃ¡t Háº£i"],
+  "Cáº§n ThÆ¡": ["Ninh Kiá»u","BÃ¬nh Thá»§y","CÃ¡i RÄƒng","Ã” MÃ´n","Thá»‘t Ná»‘t","Phong Äiá»n","Cá» Äá»","Thá»›i Lai","VÄ©nh Tháº¡nh"]
 };
 
 export { provinceDistricts };
 
 const locationProvinces = [
-  "TP.HCM","Hà Nội","Đà Nẵng","Hải Phòng","Cần Thơ",
-  "Bà Rịa - Vũng Tàu","Bình Dương","Đồng Nai","Khánh Hòa","Lâm Đồng",
-  "Quảng Ninh","Thanh Hóa","Nghệ An","Thừa Thiên Huế","Quảng Nam",
-  "Bình Định","Phú Yên","Bình Thuận","Ninh Thuận","Gia Lai",
-  "Đắk Lắk","Lào Cai","Vĩnh Phúc","Bắc Ninh","Hải Dương",
-  "Hưng Yên","Nam Định","Thái Bình","Ninh Bình","Long An",
-  "Tiền Giang","Kiên Giang","An Giang","Sóc Trăng","Cà Mau","Đắk Nông","Kon Tum","Bình Phước","Tây Ninh"
+  "TP.HCM","HÃ  Ná»™i","ÄÃ  Náºµng","Háº£i PhÃ²ng","Cáº§n ThÆ¡",
+  "BÃ  Rá»‹a - VÅ©ng TÃ u","BÃ¬nh DÆ°Æ¡ng","Äá»“ng Nai","KhÃ¡nh HÃ²a","LÃ¢m Äá»“ng",
+  "Quáº£ng Ninh","Thanh HÃ³a","Nghá»‡ An","Thá»«a ThiÃªn Huáº¿","Quáº£ng Nam",
+  "BÃ¬nh Äá»‹nh","PhÃº YÃªn","BÃ¬nh Thuáº­n","Ninh Thuáº­n","Gia Lai",
+  "Äáº¯k Láº¯k","LÃ o Cai","VÄ©nh PhÃºc","Báº¯c Ninh","Háº£i DÆ°Æ¡ng",
+  "HÆ°ng YÃªn","Nam Äá»‹nh","ThÃ¡i BÃ¬nh","Ninh BÃ¬nh","Long An",
+  "Tiá»n Giang","KiÃªn Giang","An Giang","SÃ³c TrÄƒng","CÃ  Mau","Äáº¯k NÃ´ng","Kon Tum","BÃ¬nh PhÆ°á»›c","TÃ¢y Ninh"
 ];
 
 export { locationProvinces };
@@ -108,7 +108,7 @@ const locationOptions = locationProvinces;
 
 export { locationOptions };
 
-const operatingAreaOptions = ["Hà Nội", "TP.HCM", "Đà Nẵng", "Hà Nội và tỉnh lân cận", "TP.HCM, Vũng Tàu, Đà Lạt", "Toàn quốc"];
+const operatingAreaOptions = ["HÃ  Ná»™i", "TP.HCM", "ÄÃ  Náºµng", "HÃ  Ná»™i vÃ  tá»‰nh lÃ¢n cáº­n", "TP.HCM, VÅ©ng TÃ u, ÄÃ  Láº¡t", "ToÃ n quá»‘c"];
 
 export { operatingAreaOptions };
 
@@ -130,9 +130,9 @@ const emptyForm = {
     bodyStyle: ""
   },
   technicalInfo: {
-      fuel: "Xăng",
+      fuel: "XÄƒng",
       engine: "",
-    transmission: "Số tự động",
+    transmission: "Sá»‘ tá»± Ä‘á»™ng",
     drivetrain: "",
     fuelConsumption: "",
     mileage: ""
@@ -171,7 +171,7 @@ const emptyForm = {
     zaloPhone: ""
   },
   status: {
-    condition: "Tốt",
+    condition: "Tá»‘t",
     popularity: 0,
     dataWarning: "",
     isVerified: false
@@ -188,48 +188,48 @@ const getFieldGroups = (form, packageType = "premium") => {
   const basicFields = [
     {
       module: "Module_BasicInfoSection",
-      title: "Thông tin cơ bản",
-      description: "Tên xe, hãng, dòng xe và số chỗ.",
+      title: "ThÃ´ng tin cÆ¡ báº£n",
+      description: "TÃªn xe, hÃ£ng, dÃ²ng xe vÃ  sá»‘ chá»—.",
       fields: [
-        ["basicInfo.brand", "Hãng xe", "select", true, brandOptions],
-        ["basicInfo.model", "Dòng xe", "select", true, carModelsData[form.basicInfo.brand] || []],
-        ["basicInfo.year", "Năm sản xuất", "select", true, yearOptions],
-        ["basicInfo.plate", "Biển số xe", "text", true, null, "12A34567"],
-        ["basicInfo.seats", "Số chỗ ngồi", "select", true, seatOptions],
+        ["basicInfo.brand", "HÃ£ng xe", "select", true, brandOptions],
+        ["basicInfo.model", "DÃ²ng xe", "select", true, carModelsData[form.basicInfo.brand] || []],
+        ["basicInfo.year", "NÄƒm sáº£n xuáº¥t", "select", true, yearOptions],
+        ["basicInfo.plate", "Biá»ƒn sá»‘ xe", "text", true, null, "12A34567"],
+        ["basicInfo.seats", "Sá»‘ chá»— ngá»“i", "select", true, seatOptions],
       ]
     },
     {
       module: "Module_RentalInfoSection",
-      title: "Giá cho thuê",
-      description: "Giá theo ngày và địa điểm nhận xe.",
+      title: "GiÃ¡ cho thuÃª",
+      description: "GiÃ¡ theo ngÃ y vÃ  Ä‘á»‹a Ä‘iá»ƒm nháº­n xe.",
       fields: [
-        ["rentalInfo.status", "Trạng thái", "select", true, [
-          ["available", "Xe trống"],
-          ["busy", "Xe bận"]
+        ["rentalInfo.status", "Tráº¡ng thÃ¡i", "select", true, [
+          ["available", "Xe trá»‘ng"],
+          ["busy", "Xe báº­n"]
         ]],
-        ["rentalInfo.dayPrice", "Giá thuê theo ngày", "number", true],
-        ["rentalInfo.weekendPrice", "Giá cuối tuần", "number", false],
-        ["rentalInfo.pickupLocation", "địa điểm nhận xe", "select", true, locationOptions],
-          ["rentalInfo.driverIncluded", "Có tài xế", "boolean"]
+        ["rentalInfo.dayPrice", "GiÃ¡ thuÃª theo ngÃ y", "number", true],
+        ["rentalInfo.weekendPrice", "GiÃ¡ cuá»‘i tuáº§n", "number", false],
+        ["rentalInfo.pickupLocation", "Ä‘á»‹a Ä‘iá»ƒm nháº­n xe", "select", true, locationOptions],
+          ["rentalInfo.driverIncluded", "CÃ³ tÃ i xáº¿", "boolean"]
       ]
     },
           {
         module: "Module_RentalConditionsSection",
-        title: "Điều kiện thuê",
-        description: "Các yêu cầu bắt buộc đối với khách thuê.",
+        title: "Äiá»u kiá»‡n thuÃª",
+        description: "CÃ¡c yÃªu cáº§u báº¯t buá»™c Ä‘á»‘i vá»›i khÃ¡ch thuÃª.",
         fields: [
-          ["rentalInfo.requireDeposit", "Yêu cầu đặt cọc", "boolean"],
-          ["rentalInfo.requireMotorbike", "Thế chấp xe máy", "boolean"],
-          ["rentalInfo.requireLicense", "Đối chiếu GPLX", "boolean"]
+          ["rentalInfo.requireDeposit", "YÃªu cáº§u Ä‘áº·t cá»c", "boolean"],
+          ["rentalInfo.requireMotorbike", "Tháº¿ cháº¥p xe mÃ¡y", "boolean"],
+          ["rentalInfo.requireLicense", "Äá»‘i chiáº¿u GPLX", "boolean"]
         ]
       },
       {
         module: "Module_OwnerContactSection",
-      title: "Thông tin chủ xe",
-      description: "Số điện thoại để khách liên hệ.",
+      title: "ThÃ´ng tin chá»§ xe",
+      description: "Sá»‘ Ä‘iá»‡n thoáº¡i Ä‘á»ƒ khÃ¡ch liÃªn há»‡.",
       fields: [
-        ["ownerInfo.name", "Tên chủ xe", "text", true],
-        ["ownerInfo.phone", "SĐT chủ xe", "tel", true]
+        ["ownerInfo.name", "TÃªn chá»§ xe", "text", true],
+        ["ownerInfo.phone", "SÄT chá»§ xe", "tel", true]
       ]
     }
   ];
@@ -239,70 +239,70 @@ const getFieldGroups = (form, packageType = "premium") => {
   return [
     {
       module: "Module_BasicInfoSection",
-      title: "Thông tin cơ bản",
-      description: "Nhận diện xe, phân loại và các thông tin hiển thị chính.",
+      title: "ThÃ´ng tin cÆ¡ báº£n",
+      description: "Nháº­n diá»‡n xe, phÃ¢n loáº¡i vÃ  cÃ¡c thÃ´ng tin hiá»ƒn thá»‹ chÃ­nh.",
       fields: [
-        ["basicInfo.brand", "Hãng xe", "select", true, brandOptions],
-        ["basicInfo.model", "Dòng xe", "select", true, carModelsData[form.basicInfo.brand] || []],
-        ["basicInfo.year", "Năm sản xuất", "select", true, yearOptions],
-        ["basicInfo.plate", "Biển số xe", "text", true, null, "12A34567"],
-        ["basicInfo.exteriorColor", "Màu xe", "select", false, colorOptions],
-        ["basicInfo.seats", "Số chỗ ngồi", "select", true, seatOptions],
-        ["basicInfo.vehicleType", "Loại xe", "select", false, ["Sedan", "SUV", "MPV", "Hatchback", "Pickup", "Minivan"]]
+        ["basicInfo.brand", "HÃ£ng xe", "select", true, brandOptions],
+        ["basicInfo.model", "DÃ²ng xe", "select", true, carModelsData[form.basicInfo.brand] || []],
+        ["basicInfo.year", "NÄƒm sáº£n xuáº¥t", "select", true, yearOptions],
+        ["basicInfo.plate", "Biá»ƒn sá»‘ xe", "text", true, null, "12A34567"],
+        ["basicInfo.exteriorColor", "MÃ u xe", "select", false, colorOptions],
+        ["basicInfo.seats", "Sá»‘ chá»— ngá»“i", "select", true, seatOptions],
+        ["basicInfo.vehicleType", "Loáº¡i xe", "select", false, ["Sedan", "SUV", "MPV", "Hatchback", "Pickup", "Minivan"]]
       ]
     },
     {
       module: "Module_TechnicalInfoSection",
-      title: "Thông tin kỹ thuật",
-      description: "Thông số vận hành giúp lọc và tư vấn xe chính xác.",
+      title: "ThÃ´ng tin ká»¹ thuáº­t",
+      description: "ThÃ´ng sá»‘ váº­n hÃ nh giÃºp lá»c vÃ  tÆ° váº¥n xe chÃ­nh xÃ¡c.",
       fields: [
-        ["technicalInfo.fuel", "Loại nhiên liệu", "select", true, ["Xăng", "Dầu Diesel", "Hybrid", "Điện"]],
-        ...(form.technicalInfo?.fuel === "Điện" ? [
-          ["technicalInfo.engine", "Mã lực / Moment xoắn", "select", false, ["Dưới 150 HP", "150 - 10 HP", "200 - 300 HP", "Trên 300 HP"]],
-          ["technicalInfo.fuelConsumption", "Mức tiêu hao (km / 1% pin)", "select", true, ["Dưới 3 km/1%", "3 - 5 km/1%", "5 - 7 km/1%", "Trên 7 km/1%"]]
+        ["technicalInfo.fuel", "Loáº¡i nhiÃªn liá»‡u", "select", true, ["XÄƒng", "Dáº§u Diesel", "Hybrid", "Äiá»‡n"]],
+        ...(form.technicalInfo?.fuel === "Äiá»‡n" ? [
+          ["technicalInfo.engine", "MÃ£ lá»±c / Moment xoáº¯n", "select", false, ["DÆ°á»›i 150 HP", "150 - 10 HP", "200 - 300 HP", "TrÃªn 300 HP"]],
+          ["technicalInfo.fuelConsumption", "Má»©c tiÃªu hao (km / 1% pin)", "select", true, ["DÆ°á»›i 3 km/1%", "3 - 5 km/1%", "5 - 7 km/1%", "TrÃªn 7 km/1%"]]
         ] : [
-          ["technicalInfo.engine", "Dung tích động cơ", "select", false, ["1.0L", "1.5L", "2.0L", "2.0L Bi-Turbo", "2.4L", "2.5L"]],
-          ["technicalInfo.fuelConsumption", "Mức tiêu hao nhiên liệu", "select", true, ["4-5L/100km", "5-6L/100km", "6-7L/100km", "7-8L/100km", "8L+/100km"]]
+          ["technicalInfo.engine", "Dung tÃ­ch Ä‘á»™ng cÆ¡", "select", false, ["1.0L", "1.5L", "2.0L", "2.0L Bi-Turbo", "2.4L", "2.5L"]],
+          ["technicalInfo.fuelConsumption", "Má»©c tiÃªu hao nhiÃªn liá»‡u", "select", true, ["4-5L/100km", "5-6L/100km", "6-7L/100km", "7-8L/100km", "8L+/100km"]]
         ]),
-        ["technicalInfo.transmission", "Hộp số", "select", true, ["Số tự động", "Số sàn"]],
-        ["technicalInfo.drivetrain", "Hệ dẫn động", "select", false, ["FWD", "RWD", "AWD", "4WD"]]
+        ["technicalInfo.transmission", "Há»™p sá»‘", "select", true, ["Sá»‘ tá»± Ä‘á»™ng", "Sá»‘ sÃ n"]],
+        ["technicalInfo.drivetrain", "Há»‡ dáº«n Ä‘á»™ng", "select", false, ["FWD", "RWD", "AWD", "4WD"]]
       ]
     },
     {
       module: "Module_RentalInfoSection",
-      title: "Thông tin cho thuê",
-      description: "Giá, điều kiện, khu vực hoạt động và trạng thái khai thác.",
+      title: "ThÃ´ng tin cho thuÃª",
+      description: "GiÃ¡, Ä‘iá»u kiá»‡n, khu vá»±c hoáº¡t Ä‘á»™ng vÃ  tráº¡ng thÃ¡i khai thÃ¡c.",
       fields: [
-        ["rentalInfo.status", "Trạng thái cho thuê", "select", true, [
-          ["available", "Xe trống"],
-          ["busy", "Xe bận"]
+        ["rentalInfo.status", "Tráº¡ng thÃ¡i cho thuÃª", "select", true, [
+          ["available", "Xe trá»‘ng"],
+          ["busy", "Xe báº­n"]
         ]],
-        ["rentalInfo.dayPrice", "Giá thuê theo ngày", "number", true],
-        ["rentalInfo.weekendPrice", "Giá cuối tuần", "number", false],
-        ["rentalInfo.pickupLocation", "địa điểm nhận xe", "select", true, locationOptions],
-          ["rentalInfo.dailyKmLimit", "Giới hạn km mỗi ngày", "number"],
-          ["rentalInfo.overKmFee", "Phí vượt/km", "number"],
+        ["rentalInfo.dayPrice", "GiÃ¡ thuÃª theo ngÃ y", "number", true],
+        ["rentalInfo.weekendPrice", "GiÃ¡ cuá»‘i tuáº§n", "number", false],
+        ["rentalInfo.pickupLocation", "Ä‘á»‹a Ä‘iá»ƒm nháº­n xe", "select", true, locationOptions],
+          ["rentalInfo.dailyKmLimit", "Giá»›i háº¡n km má»—i ngÃ y", "number"],
+          ["rentalInfo.overKmFee", "PhÃ­ vÆ°á»£t/km", "number"],
           ["rentalInfo.extraOptions", "", "extra_options_group"],
-        ...(form.technicalInfo?.fuel === "Điện" ? [["rentalInfo.chargeFee", "Phí sạc pin (VNĐ/1%)", "toggle_number"], ["rentalInfo.freeCharge", "Miễn phí sạc pin (km)", "toggle_number"]] : [])
+        ...(form.technicalInfo?.fuel === "Äiá»‡n" ? [["rentalInfo.chargeFee", "PhÃ­ sáº¡c pin (VNÄ/1%)", "toggle_number"], ["rentalInfo.freeCharge", "Miá»…n phÃ­ sáº¡c pin (km)", "toggle_number"]] : [])
       ]
     },
           {
         module: "Module_RentalConditionsSection",
-        title: "Điều kiện thuê",
-        description: "Các yêu cầu bắt buộc đối với khách thuê.",
+        title: "Äiá»u kiá»‡n thuÃª",
+        description: "CÃ¡c yÃªu cáº§u báº¯t buá»™c Ä‘á»‘i vá»›i khÃ¡ch thuÃª.",
         fields: [
-          ["rentalInfo.requireDeposit", "Yêu cầu đặt cọc", "boolean"],
-          ["rentalInfo.requireMotorbike", "Thế chấp xe máy", "boolean"],
-          ["rentalInfo.requireLicense", "Đối chiếu GPLX", "boolean"]
+          ["rentalInfo.requireDeposit", "YÃªu cáº§u Ä‘áº·t cá»c", "boolean"],
+          ["rentalInfo.requireMotorbike", "Tháº¿ cháº¥p xe mÃ¡y", "boolean"],
+          ["rentalInfo.requireLicense", "Äá»‘i chiáº¿u GPLX", "boolean"]
         ]
       },
       {
         module: "Module_OwnerContactSection",
-      title: "Thông tin chủ xe",
-      description: "Số điện thoại để khách liên hệ.",
+      title: "ThÃ´ng tin chá»§ xe",
+      description: "Sá»‘ Ä‘iá»‡n thoáº¡i Ä‘á»ƒ khÃ¡ch liÃªn há»‡.",
       fields: [
-        ["ownerInfo.name", "Tên chủ xe", "text", true],
-        ["ownerInfo.phone", "SĐT chủ xe", "tel", true]
+        ["ownerInfo.name", "TÃªn chá»§ xe", "text", true],
+        ["ownerInfo.phone", "SÄT chá»§ xe", "tel", true]
       ]
     }
   ];
@@ -348,7 +348,7 @@ const toLocalKey = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(
 
 export { toLocalKey };
 
-const VN_DAYS = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+const VN_DAYS = ['Chá»§ Nháº­t', 'Thá»© Hai', 'Thá»© Ba', 'Thá»© TÆ°', 'Thá»© NÄƒm', 'Thá»© SÃ¡u', 'Thá»© Báº£y'];
 
 export { VN_DAYS };
 
@@ -362,7 +362,7 @@ export { fmtRangeDate };
 
 const fmtRangeLabel = (r) => r.start === r.end
   ? fmtRangeDate(r.start)
-  : `${fmtRangeDate(r.start)} – ${fmtRangeDate(r.end)}`;
+  : `${fmtRangeDate(r.start)} â€“ ${fmtRangeDate(r.end)}`;
 
 export { fmtRangeLabel };
 
@@ -370,7 +370,7 @@ const getCarWeight = (car) => {
   let weight = 1;
   if (car.status?.isDemo) weight = 2;
   if (car.status?.isVerified) weight = 3;
-  // Ưu tiên hiển thị trên cùng (Chạy Ads / Đẩy tin)
+  // Æ¯u tiÃªn hiá»ƒn thá»‹ trÃªn cÃ¹ng (Cháº¡y Ads / Äáº©y tin)
   if (car.status?.promotedUntil && new Date(car.status.promotedUntil).getTime() > Date.now()) {
     weight = 10;
   }
@@ -398,21 +398,21 @@ function inferSmartFilters(query) {
   const seats = text.match(/(\d+)\s*cho/);
   const price = text.match(/duoi\s*(\d+(?:[.,]\d+)?)\s*(trieu|k|nghin|ngan)?/);
   if (seats) inferred.seats = seats[1];
-  if (text.includes("tu dong")) inferred.transmission = "Số tự động";
-  if (text.includes("so san")) inferred.transmission = "Số sàn";
+  if (text.includes("tu dong")) inferred.transmission = "Sá»‘ tá»± Ä‘á»™ng";
+  if (text.includes("so san")) inferred.transmission = "Sá»‘ sÃ n";
   if (text.includes("suv")) inferred.vehicleType = "SUV";
   if (text.includes("sedan")) inferred.vehicleType = "Sedan";
-  if (text.includes("xang")) inferred.fuel = "Xăng";
+  if (text.includes("xang")) inferred.fuel = "XÄƒng";
   if (text.includes("diesel")) inferred.fuel = "Diesel";
   if (text.includes("hybrid")) inferred.fuel = "Hybrid";
-  if (text.includes("dien")) inferred.fuel = "Điện";
+  if (text.includes("dien")) inferred.fuel = "Äiá»‡n";
   if (text.includes("free sac") || text.includes("sac mien phi")) {
-    inferred.fuel = "Điện";
+    inferred.fuel = "Äiá»‡n";
     inferred.freeCharge = "true";
   }
   if (text.includes("con trong") || text.includes("ranh")) inferred.status = "available";
   if (text.includes("bao duong")) inferred.status = "maintenance";
-  if (text.includes("ha noi")) inferred.location = "Hà Nội";
+  if (text.includes("ha noi")) inferred.location = "HÃ  Ná»™i";
   if (text.includes("tp hcm") || text.includes("sai gon")) inferred.location = "TP.HCM";
   if (text.includes("co tai xe")) inferred.driver = "true";
   if (text.includes("tu lai")) inferred.driver = "false";
@@ -427,24 +427,24 @@ export { inferSmartFilters };
 
 function activeChips(filters, query) {
   const labels = {
-    brand: "Hãng",
-    seats: "Số chỗ",
-    vehicleType: "Loại xe",
-    transmission: "Hộp số",
-    fuel: "Nhiên liệu",
-    status: "Trạng thái",
-    location: "địa điểm",
-    maxPrice: "Giá tối đa",
-    driver: "Tài xế",
-    freeCharge: "Free sạc"
+    brand: "HÃ£ng",
+    seats: "Sá»‘ chá»—",
+    vehicleType: "Loáº¡i xe",
+    transmission: "Há»™p sá»‘",
+    fuel: "NhiÃªn liá»‡u",
+    status: "Tráº¡ng thÃ¡i",
+    location: "Ä‘á»‹a Ä‘iá»ƒm",
+    maxPrice: "GiÃ¡ tá»‘i Ä‘a",
+    driver: "TÃ i xáº¿",
+    freeCharge: "Free sáº¡c"
   };
   const chips = Object.entries(filters)
     .filter(([key, v]) => v && key !== "owner" && !(Array.isArray(v) && v.length === 0))
     .map(([key, value]) => ({
       key,
-      label: key === "maxPrice" ? `Dưới ${formatCurrency(value)}/ngày` : key === "freeCharge" ? "Chỉ xe Free sạc" : `${labels[key]}: ${statusText(value)}`
+      label: key === "maxPrice" ? `DÆ°á»›i ${formatCurrency(value)}/ngÃ y` : key === "freeCharge" ? "Chá»‰ xe Free sáº¡c" : `${labels[key]}: ${statusText(value)}`
     }));
-  if (filters.owner) chips.push({ key: "owner", label: `Xe của: ${filters.owner.name}` });
+  if (filters.owner) chips.push({ key: "owner", label: `Xe cá»§a: ${filters.owner.name}` });
   if (query) chips.unshift({ key: "query", label: query });
   return chips;
 }
@@ -454,31 +454,31 @@ export { activeChips };
 function validateCar(form, packageType = "full") {
   const errors = {};
   const year = Number(form.basicInfo.year);
-  if (!form.basicInfo.name) errors["basicInfo.name"] = "Vui lòng nhập tên xe.";
-  if (!form.basicInfo.brand) errors["basicInfo.brand"] = "Vui lòng chọn hãng xe.";
-  if (!form.basicInfo.model) errors["basicInfo.model"] = "Vui lòng chọn dòng xe.";
+  if (!form.basicInfo.name) errors["basicInfo.name"] = "Vui lÃ²ng nháº­p tÃªn xe.";
+  if (!form.basicInfo.brand) errors["basicInfo.brand"] = "Vui lÃ²ng chá»n hÃ£ng xe.";
+  if (!form.basicInfo.model) errors["basicInfo.model"] = "Vui lÃ²ng chá»n dÃ²ng xe.";
   if (!form.basicInfo.plate) {
-    errors["basicInfo.plate"] = "Biển số không được để trống.";
+    errors["basicInfo.plate"] = "Biá»ƒn sá»‘ khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng.";
   } else {
     const rawPlate = form.basicInfo.plate.replace(/[-.\s]/g, "").toUpperCase();
     if (!/^[0-9]{2}[A-Z]{1,2}[0-9]{4,5}$/.test(rawPlate)) {
-      errors["basicInfo.plate"] = "Biển số không hợp lệ (VD: 51H12345).";
+      errors["basicInfo.plate"] = "Biá»ƒn sá»‘ khÃ´ng há»£p lá»‡ (VD: 51H12345).";
     }
   }
-  if (!year || year > new Date().getFullYear() || year < 1990) errors["basicInfo.year"] = "Năm sản xuất phải hợp lệ.";
-  if (!Number(form.basicInfo.seats)) errors["basicInfo.seats"] = "Số chỗ phải là số hợp lệ.";
+  if (!year || year > new Date().getFullYear() || year < 1990) errors["basicInfo.year"] = "NÄƒm sáº£n xuáº¥t pháº£i há»£p lá»‡.";
+  if (!Number(form.basicInfo.seats)) errors["basicInfo.seats"] = "Sá»‘ chá»— pháº£i lÃ  sá»‘ há»£p lá»‡.";
   
   if (packageType !== "basic") {
-    if (!form.technicalInfo.fuel) errors["technicalInfo.fuel"] = "Chọn loại nhiên liệu.";
+    if (!form.technicalInfo.fuel) errors["technicalInfo.fuel"] = "Chá»n loáº¡i nhiÃªn liá»‡u.";
       
-    if (!form.technicalInfo.transmission) errors["technicalInfo.transmission"] = "Chọn hộp số.";
-      if (!form.technicalInfo.fuelConsumption) errors["technicalInfo.fuelConsumption"] = "Chọn mức tiêu hao nhiên liệu.";
+    if (!form.technicalInfo.transmission) errors["technicalInfo.transmission"] = "Chá»n há»™p sá»‘.";
+      if (!form.technicalInfo.fuelConsumption) errors["technicalInfo.fuelConsumption"] = "Chá»n má»©c tiÃªu hao nhiÃªn liá»‡u.";
   }
   
-  if (!Number(form.rentalInfo.dayPrice)) errors["rentalInfo.dayPrice"] = "Giá thuê ngày phải là số hợp lệ.";
-  if (!form.rentalInfo.pickupLocation) errors["rentalInfo.pickupLocation"] = "Vui lòng nhập địa điểm nhận xe.";
-  if (!form.ownerInfo?.name) errors["ownerInfo.name"] = "Vui lòng nhập tên chủ xe.";
-  if (!phoneDigits(form.ownerInfo?.phone).match(/^0?\d{9,11}$/)) errors["ownerInfo.phone"] = "SĐT chủ xe chưa hợp lệ.";
+  if (!Number(form.rentalInfo.dayPrice)) errors["rentalInfo.dayPrice"] = "GiÃ¡ thuÃª ngÃ y pháº£i lÃ  sá»‘ há»£p lá»‡.";
+  if (!form.rentalInfo.pickupLocation) errors["rentalInfo.pickupLocation"] = "Vui lÃ²ng nháº­p Ä‘á»‹a Ä‘iá»ƒm nháº­n xe.";
+  if (!form.ownerInfo?.name) errors["ownerInfo.name"] = "Vui lÃ²ng nháº­p tÃªn chá»§ xe.";
+  if (!phoneDigits(form.ownerInfo?.phone).match(/^0?\d{9,11}$/)) errors["ownerInfo.phone"] = "SÄT chá»§ xe chÆ°a há»£p lá»‡.";
   return errors;
 }
 
@@ -486,7 +486,7 @@ export { validateCar };
 
 function getOwnerInfo(car) {
   return {
-    name: car.ownerInfo?.name || "Anh Minh - Chủ xe",
+    name: car.ownerInfo?.name || "Anh Minh - Chá»§ xe",
     phone: car.ownerInfo?.phone || "090 123 4567",
     zaloPhone: car.ownerInfo?.zaloPhone || car.ownerInfo?.phone || "0901234567"
   };
@@ -558,7 +558,7 @@ function normalize(v) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d");
+    .replace(/Ä‘/g, "d");
 }
 
 export { normalize };
@@ -573,7 +573,7 @@ function formatCurrency(value) {
   if (!value && value !== 0) return '';
   const n = Number(value);
   if (!n) return '';
-  return n.toLocaleString('vi-VN') + 'đ';
+  return n.toLocaleString('vi-VN') + 'Ä‘';
 }
 
 export { formatCurrency };
@@ -588,12 +588,12 @@ export { fmtNum };
 
 function statusText(value) {
   return {
-    available: "Còn trống",
-    rented: "Đang thuê",
-    maintenance: "Bảo dưỡng",
-    hidden: "Tạm ẩn",
-    true: "Có tài xế",
-    false: "Tự lái"
+    available: "CÃ²n trá»‘ng",
+    rented: "Äang thuÃª",
+    maintenance: "Báº£o dÆ°á»¡ng",
+    hidden: "Táº¡m áº©n",
+    true: "CÃ³ tÃ i xáº¿",
+    false: "Tá»± lÃ¡i"
   }[value] || value;
 }
 
@@ -604,7 +604,7 @@ function formatBusyDates(blockedDates) {
   const first = blockedDates[0];
   const start = typeof first === 'string' ? first : first.start;
   const end = typeof first === 'string' ? first : first.end;
-  const tag = (typeof first === 'object' && first.tag === 'rented') ? 'Khách thuê' : 'Lịch bận';
+  const tag = (typeof first === 'object' && first.tag === 'rented') ? 'KhÃ¡ch thuÃª' : 'Lá»‹ch báº­n';
   
   const formatDate = (d) => {
     if (!d) return '';
@@ -619,7 +619,7 @@ function formatBusyDates(blockedDates) {
   } else if (start) {
     text = formatDate(start);
   } else {
-    text = "Có lịch";
+    text = "CÃ³ lá»‹ch";
   }
   
   if (blockedDates.length > 1) {
@@ -671,3 +671,15 @@ export const uploadToImgBB = async (file) => {
     throw err;
   }
 };
+
+function generateSlug(text) {
+  if (!text) return '';
+  return text.toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/Ä‘/g, 'd')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+export { generateSlug };
