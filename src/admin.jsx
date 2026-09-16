@@ -7,91 +7,10 @@ import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./f
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 import "./styles.css";
 
-import * as Core from './core.js';
-import * as Shared from './shared.jsx';
-import * as Cars from './cars.jsx';
-import * as Auth from './auth.jsx';
-const { isWeekendRange } = Core;
-const { ADMIN_EMAILS } = Core;
-const { STORAGE_KEY } = Core;
-const { carModelsData } = Core;
-const { brandOptions } = Core;
-const { colorOptions } = Core;
-const { seatOptions } = Core;
-const { yearOptions } = Core;
-const { bodyStyleOptions } = Core;
-const { AMENITY_OPTIONS } = Core;
-const { provinceDistricts } = Core;
-const { locationProvinces } = Core;
-const { locationOptions } = Core;
-const { operatingAreaOptions } = Core;
-const { seedCars } = Core;
-const { emptyForm } = Core;
-const { getFieldGroups } = Core;
-const { formatCompactDateTime } = Core;
-const { formatShortDate } = Core;
-const { getDaysInMonth } = Core;
-const { getFirstDayOfMonth } = Core;
-const { toLocalKey } = Core;
-const { VN_DAYS } = Core;
-const { fmtRangeDate } = Core;
-const { fmtRangeLabel } = Core;
-const { getCarWeight } = Core;
-const { sorters } = Core;
-const { inferSmartFilters } = Core;
-const { activeChips } = Core;
-const { validateCar } = Core;
-const { getOwnerInfo } = Core;
-const { phoneDigits } = Core;
-const { blobToDataUrl } = Core;
-const { getAtPath } = Core;
-const { setAtPath } = Core;
-const { clone } = Core;
-const { normalizeCarForm } = Core;
-const { normalize } = Core;
-const { unique } = Core;
-const { formatCurrency } = Core;
-const { fmtNum } = Core;
-const { statusText } = Core;
-const { formatBusyDates } = Core;
-const { today } = Core;
-const { delay } = Core;
-const { AppLogo } = Shared;
-const { SearchLocationPicker } = Shared;
-const { ErrorBoundary } = Shared;
-const { LazyImage } = Shared;
-const { SkeletonCard } = Shared;
-const { ImageSlider } = Shared;
-const { ModuleFrame } = Shared;
-const { StatusBadge } = Shared;
-const { Field } = Shared;
-const { Toggle } = Shared;
-const { LocationPicker } = Shared;
-const { DepositField } = Shared;
-const { FilterCheckboxGroup } = Shared;
-const { FilterToggle } = Shared;
-const { FilterSelect } = Shared;
-const { Stat } = Shared;
-const { ImageUploadOptimizer } = Shared;
-const { InfoPanel } = Shared;
-const { MapModal } = Shared;
-const { handleOpenMap } = Shared;
-const { Overview } = Cars;
-const { CarCard } = Cars;
-const { CarDetailModal } = Cars;
-const { AddCarForm } = Cars;
-const { DateTimePickerModal } = Cars;
-const { BlockedDatesManager } = Cars;
-const { LoginScreen } = Auth;
-const { AccountSettingsScreen } = Auth;
-const { QuyCheModal } = Auth;
-const { TopUpModal } = Auth;
-const { OwnerWizard } = Auth;
-const { SetLocationPopup } = Auth;
-const { UpgradeModal } = Auth;
-const { FaqModal } = Auth;
-const { CommunityModal } = Auth;
-const { DataProtectionPolicy } = Auth;
+import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
+import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from './shared.jsx';
+import { Overview, CarCard, CarDetailModal, AddCarForm, DateTimePickerModal, BlockedDatesManager } from './cars.jsx';
+import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from './auth.jsx';
 
 function AdminDashboard({ cars, currentUser, onClose, onDeleteCar }) {
   const [tab, setTab] = useState('stats');
@@ -130,7 +49,6 @@ function AdminDashboard({ cars, currentUser, onClose, onDeleteCar }) {
 
     return Object.values(dates).sort((a, b) => a.date.localeCompare(b.date));
   }, [cars, users]);
-
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'upgrade_requests'), (snap) => {

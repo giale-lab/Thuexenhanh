@@ -7,84 +7,9 @@ import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./f
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 import "./styles.css";
 
-import * as Core from './core.js';
-import * as Shared from './shared.jsx';
-import * as Auth from './auth.jsx';
-const { isWeekendRange } = Core;
-const { ADMIN_EMAILS } = Core;
-const { STORAGE_KEY } = Core;
-const { carModelsData } = Core;
-const { brandOptions } = Core;
-const { colorOptions } = Core;
-const { seatOptions } = Core;
-const { yearOptions } = Core;
-const { bodyStyleOptions } = Core;
-const { AMENITY_OPTIONS } = Core;
-const { provinceDistricts } = Core;
-const { locationProvinces } = Core;
-const { locationOptions } = Core;
-const { operatingAreaOptions } = Core;
-const { seedCars } = Core;
-const { emptyForm } = Core;
-const { getFieldGroups } = Core;
-const { formatCompactDateTime } = Core;
-const { formatShortDate } = Core;
-const { getDaysInMonth } = Core;
-const { getFirstDayOfMonth } = Core;
-const { toLocalKey } = Core;
-const { VN_DAYS } = Core;
-const { fmtRangeDate } = Core;
-const { fmtRangeLabel } = Core;
-const { getCarWeight } = Core;
-const { sorters } = Core;
-const { inferSmartFilters } = Core;
-const { activeChips } = Core;
-const { validateCar } = Core;
-const { getOwnerInfo } = Core;
-const { phoneDigits } = Core;
-const { blobToDataUrl } = Core;
-const { getAtPath } = Core;
-const { setAtPath } = Core;
-const { clone } = Core;
-const { normalizeCarForm } = Core;
-const { normalize } = Core;
-const { unique } = Core;
-const { formatCurrency } = Core;
-const { fmtNum } = Core;
-const { statusText } = Core;
-const { formatBusyDates } = Core;
-const { today } = Core;
-const { delay } = Core;
-const { AppLogo } = Shared;
-const { SearchLocationPicker } = Shared;
-const { ErrorBoundary } = Shared;
-const { LazyImage } = Shared;
-const { SkeletonCard } = Shared;
-const { ImageSlider } = Shared;
-const { ModuleFrame } = Shared;
-const { StatusBadge } = Shared;
-const { Field } = Shared;
-const { Toggle } = Shared;
-const { LocationPicker } = Shared;
-const { DepositField } = Shared;
-const { FilterCheckboxGroup } = Shared;
-const { FilterToggle } = Shared;
-const { FilterSelect } = Shared;
-const { Stat } = Shared;
-const { ImageUploadOptimizer } = Shared;
-const { InfoPanel } = Shared;
-const { MapModal } = Shared;
-const { handleOpenMap } = Shared;
-const { LoginScreen } = Auth;
-const { AccountSettingsScreen } = Auth;
-const { QuyCheModal } = Auth;
-const { TopUpModal } = Auth;
-const { OwnerWizard } = Auth;
-const { SetLocationPopup } = Auth;
-const { UpgradeModal } = Auth;
-const { FaqModal } = Auth;
-const { CommunityModal } = Auth;
-const { DataProtectionPolicy } = Auth;
+import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
+import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from './shared.jsx';
+import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from './auth.jsx';
 
 function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, showFavorites, onEdit, onDelete, onDuplicate, onStatus, onToggleFavorite, onRequestLocation }) {
   const [query, setQuery] = useState("");
@@ -271,8 +196,7 @@ function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, sho
                 />
               </div>
             </div>
-        
-            
+
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 100%', display: 'flex', gap: 12 }}>
                 {!adminMode && <SearchLocationPicker value={filters.location} onChange={(val) => setFilters({ ...filters, location: val })} />}
@@ -305,8 +229,7 @@ function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, sho
             <FilterSelect label="Hãng xe" value={filters.brand} options={brandOptions} onChange={(brand) => setFilters({ ...filters, brand })} />
             <FilterSelect label="Số chỗ" value={filters.seats} options={seatOptions} onChange={(seats) => setFilters({ ...filters, seats })} />
             <FilterCheckboxGroup label="Loại xe" values={filters.vehicleType} options={["Sedan", "SUV", "MPV", "Hatchback", "Pickup", "Minivan"]} onChange={(vehicleType) => setFilters({ ...filters, vehicleType })} />
-            
-            
+
             {adminMode && <FilterSelect label="địa điểm" value={filters.location} options={locationOptions} onChange={(location) => setFilters({ ...filters, location })} />}
             <label style={{ gridColumn: '1 / -1' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -1082,9 +1005,6 @@ function CarDetailModal({ car, isWeekend, rentalTimeRange, adminMode, currentUse
             </div>
           </div>
 
-          
-
-
           <div className="owner-contact" style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: onViewOwner ? 'pointer' : 'default' }} onClick={onViewOwner}>
               <img src={car.ownerInfo?.avatar || "/guest-avatar.png"} onError={(e) => { if (!e.target.src.includes('guest-avatar')) e.target.src = "/guest-avatar.png"; }} alt="Avatar" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} />
@@ -1409,7 +1329,6 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
   return (
     <main className="content">
       <form className="form-layout" onSubmit={submit}>
-        
 
         <div className="package-selector" style={{ display: 'none', gap: 16, marginBottom: 24 }}>
           <div
@@ -1516,7 +1435,6 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
           </div>
         </div>
 
-        
         <div style={{ display: 'flex', gap: 16, marginBottom: 24, borderBottom: '1.5px solid var(--m-border)' }}>
           <button type="button" onClick={() => setActiveTab('info')} style={{ background: 'transparent', border: 'none', fontSize: 15, fontWeight: 700, color: activeTab === 'info' ? 'var(--m-primary)' : 'var(--m-dark)', borderBottom: activeTab === 'info' ? '2.5px solid var(--m-primary)' : '2.5px solid transparent', padding: '0 4px 12px', marginBottom: -1.5, cursor: 'pointer', transition: 'all .2s' }}>Thông tin xe</button>
           <button type="button" onClick={() => setActiveTab('calendar')} style={{ background: 'transparent', border: 'none', fontSize: 15, fontWeight: 700, color: activeTab === 'calendar' ? 'var(--m-primary)' : 'var(--m-dark)', borderBottom: activeTab === 'calendar' ? '2.5px solid var(--m-primary)' : '2.5px solid transparent', padding: '0 4px 12px', marginBottom: -1.5, cursor: 'pointer', transition: 'all .2s' }}>Lịch xe</button>

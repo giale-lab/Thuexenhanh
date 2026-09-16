@@ -3,10 +3,9 @@ import * as LucideIcons from 'lucide-react';
 const { Beaker, Layers, Zap } = LucideIcons;
 
 import * as Core from './core.js';
-import * as Shared from './shared.jsx';
+import { ModuleFrame, Stat, Field } from './shared.jsx';
 
 // Destructure some shared components for easy testing
-const { ModuleFrame, Stat, Field } = Shared;
 
 function DemoScreen({ currentUser, onClose }) {
   return (
