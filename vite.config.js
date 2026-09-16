@@ -34,6 +34,10 @@ export default defineConfig({
           if (id.includes('node_modules/browser-image-compression')) {
             return 'vendor-utils';
           }
+          // Recharts: large, rarely changes
+          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-') || id.includes('node_modules/recharts-scale') || id.includes('node_modules/victory-vendor')) {
+            return 'vendor-recharts';
+          }
         },
         // Consistent chunk file naming
         chunkFileNames: 'assets/[name]-[hash].js',

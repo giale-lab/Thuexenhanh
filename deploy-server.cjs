@@ -42,13 +42,26 @@ async function pipeline(action, steps) {
 }
 
 function getGitInfo(cb) {
-  exec('git log -5 --pretty=format:"%h|%s|%ar" && echo ---BRANCH--- && git branch --show-current && echo ---CHANGED--- && git status --short', { cwd: DIR }, (e, out) => {
-    const [logs, rest] = out.split('---BRANCH---');
-    const [branchRaw, changedRaw] = (rest || '').split('---CHANGED---');
+  exec('git log -5 --pretty=format:"%h|%s|%ar" && echo ---BRANCH--- && git branch --show-current && echo ---CHANGED--- && git status --short && echo ---STAT--- && git diff HEAD --shortstat', { cwd: DIR }, (e, out) => {
+    const parts = out.split('---BRANCH---');
+    const logsRaw = parts[0];
+    const rest = parts[1] || '';
+    const [branchRaw, changedRest] = rest.split('---CHANGED---');
+    const [changedRaw, statRaw] = (changedRest || '').split('---STAT---');
+    
+    const changedLines = (changedRaw || '').trim().split('\n').filter(l => l.trim());
+    const changesList = changedLines.map(l => {
+      const type = l.substring(0, 2).trim();
+      const file = l.substring(2).trim();
+      return { type, file };
+    });
+
     cb({
       branch: (branchRaw || '').trim(),
-      changed: (changedRaw || '').trim().split('\n').filter(l => l.trim()).length,
-      logs: (logs || '').trim().split('\n').filter(l => l).map(l => {
+      changedCount: changedLines.length,
+      changesList: changesList,
+      stat: (statRaw || '').trim() || 'Không có thay đổi dòng',
+      logs: (logsRaw || '').trim().split('\n').filter(l => l).map(l => {
         const [h, m, t] = l.split('|'); return { h: (h||'').trim(), m: (m||'').trim(), t: (t||'').trim() };
       })
     });

@@ -111,8 +111,16 @@ header{display:flex;align-items:center;gap:10px;padding:0 20px;height:48px;backg
       <div class="stat"><span class="k">Trạng thái</span><span class="v ok" id="ovStatus">Sẵn sàng</span></div>
     </div>
 
+    <div class="sb-sec">
+      <div class="sb-lbl">Code Thay Đổi (Chưa commit)</div>
+      <div id="codeStat" style="font-size:11px;color:#90a4ae;margin-bottom:8px;font-style:italic">—</div>
+      <div id="changesList" style="display:flex;flex-direction:column;gap:4px">
+         <!-- files will go here -->
+      </div>
+    </div>
+
     <div class="sb-sec" style="border:none;flex:1">
-      <div class="sb-lbl">Lịch sử</div>
+      <div class="sb-lbl">Lịch sử commit</div>
       <div id="commitList"></div>
     </div>
   </div>
@@ -220,10 +228,26 @@ function refreshInfo() {
   fetch('/git-info').then(r=>r.json()).then(d => {
     document.getElementById('hBranch').textContent = d.branch || '—';
     document.getElementById('ovBranch').textContent = d.branch || '—';
-    const ch = d.changed || 0;
+    
+    const ch = d.changedCount || 0;
     const el = document.getElementById('ovChanged');
     el.textContent = ch === 0 ? '0 file' : `${ch} file`;
     el.className = 'v ' + (ch === 0 ? 'ok' : 'warn');
+    
+    document.getElementById('codeStat').textContent = d.stat || 'Không có thay đổi dòng';
+    
+    const changesHTML = (d.changesList || []).map(f => {
+      let color = '#546e7a';
+      if (f.type.includes('M')) color = '#4fc3f7'; // modified (blue)
+      if (f.type.includes('A') || f.type.includes('?')) color = '#81c784'; // added (green)
+      if (f.type.includes('D')) color = '#ef5350'; // deleted (red)
+      return `<div style="display:flex;align-items:center;gap:6px;font-size:11px">
+                <span style="color:${color};font-weight:bold;width:16px;text-align:center">${f.type}</span>
+                <span style="color:#cfd8dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${f.file}">${f.file}</span>
+              </div>`;
+    }).join('');
+    document.getElementById('changesList').innerHTML = changesHTML || '<span style="font-size:11px;color:#37474f">Sạch sẽ, không có file nào thay đổi.</span>';
+
     document.getElementById('commitList').innerHTML = (d.logs||[]).map(c =>
       `<div class="commit-item"><div class="ch">${c.h}</div><div class="cm">${c.m}</div><div class="ca">${c.t}</div></div>`
     ).join('') || '<span style="font-size:11px;color:#37474f">Chưa có commit</span>';
