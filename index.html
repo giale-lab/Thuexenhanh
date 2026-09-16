@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="Thuê xe tự lái siêu tốc – Tìm và thuê xe ô tô tự lái uy tín, giá tốt tại Việt Nam." />
+    <meta name="keywords" content="thuexenhanh, cho thuê xe tự lái, thuê xe tự lái, thue xe tu lai, thuê xe tự lái giá rẻ, thuê ô tô tự lái" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Cache Control for SPA -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://thuexe.vnigo.sbs/" />
+    <meta property="og:title"       content="Thuê Xe Nhanh – Thuê xe tự lái siêu tốc" />
+    <meta property="og:description" content="Tìm và thuê xe ô tô tự lái uy tín, giá tốt tại Việt Nam." />
+    <meta property="og:image"       content="/og-image.jpg" />
+    <meta name="twitter:card"       content="summary_large_image" />
+
+    <!-- Preconnect to speed up font + Firebase loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" />
+    <link rel="preconnect" href="https://www.googleapis.com" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+    <link rel="apple-touch-icon" href="/favicon.png?v=2" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- PWA / Add to Home Screen Support -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="ThuêXe" />
+
+    <title>Thuê Xe Nhanh – Thuê xe tự lái siêu tốc</title>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Skeleton loader shown before JS kicks in -->
+      <div style="
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        display: flex; align-items: center; justify-content: center;
+        height: 100vh; flex-direction: column; gap: 16px;
+        background: #f5f5f7; color: #8a8f9a;
+      ">
+        <img src="/logo.png" alt="Logo" style="width: 80px; height: auto; object-fit: contain;" />
+        <div style="font-size:16px; font-weight: 600; color: #141414;">Thuê Xe Nhanh</div>
+      </div>
+    </div>
+    <script>
+      // Global error handler - show user-friendly message + recovery button
+      window.addEventListener('error', function(event) {
+        var root = document.getElementById('root');
+        if (!root) return;
+        root.innerHTML = [
+          '<div style="font-family:system-ui,sans-serif;padding:32px;max-width:480px;margin:80px auto;text-align:center">',
+          '<div style="font-size:48px;margin-bottom:16px">🚗</div>',
+          '<h2 style="font-size:20px;color:#141414;margin-bottom:8px">Ứng dụng đang gặp sự cố</h2>',
+          '<p style="color:#8a8f9a;font-size:14px;margin-bottom:24px">',
+          event.message || 'Có lỗi xảy ra khi tải trang.',
+          '</p>',
+          '<button onclick="localStorage.removeItem(\'web-thue-xe-cars\');location.reload();" style="',
+          'height:44px;padding:0 24px;border:none;border-radius:10px;',
+          'background:#3b82f6;color:white;font-size:15px;font-weight:600;cursor:pointer;">',
+          'Tải lại trang</button>',
+          '</div>'
+        ].join('');
+      });
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-offline/
+
+# Dev logs
+vite-server.log
+vite-server.err.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Env files
+.env.local
+.env.*.local

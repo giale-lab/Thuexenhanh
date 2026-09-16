@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <defs>
+    <style>
+      .blue { fill: none; stroke: #0A3161; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+      .blue-fill { fill: #0A3161; }
+      .red-fill { fill: #DA251D; }
+      .yellow { fill: none; stroke: #FFC107; stroke-width: 4; stroke-linecap: round; }
+      .yellow-fill { fill: #FFC107; }
+    </style>
+  </defs>
+
+  <!-- Top Car Silhouette -->
+  <!-- Hood -> Windshield -> Roof -> Trunk -> Rear Bumper -->
+  <path class="blue" d="M 40 125 C 40 100, 80 95, 110 90 C 140 85, 160 60, 210 60 C 260 60, 300 85, 330 95 C 345 100, 360 110, 350 135 C 345 145, 335 140, 335 140" />
+
+  <!-- Front Bumper to Wheel -->
+  <path class="blue" d="M 40 125 C 45 135, 60 135, 80 135" />
+  
+  <!-- Middle Chassis (between wheels) -->
+  <path class="blue" d="M 140 135 L 250 135" />
+
+  <!-- Rear Chassis to Bumper -->
+  <path class="blue" d="M 310 135 L 335 140" />
+
+  <!-- Wheels -->
+  <!-- Front Wheel -->
+  <circle cx="110" cy="130" r="22" class="blue" />
+  <circle cx="110" cy="130" r="10" class="blue-fill" />
+  
+  <!-- Rear Wheel -->
+  <circle cx="280" cy="130" r="22" class="blue" />
+  <circle cx="280" cy="130" r="10" class="blue-fill" />
+
+  <!-- Red Flag Shape -->
+  <path class="red-fill" d="M 75 110 C 140 110, 190 90, 250 65 C 230 100, 260 105, 300 95 C 230 145, 130 140, 75 110 Z" />
+
+  <!-- Yellow Star -->
+  <polygon class="yellow-fill" points="165,95 169,104 179,104 171,110 174,119 165,113 156,119 159,110 151,104 161,104" />
+
+  <!-- Yellow Trailing Swoosh -->
+  <path class="yellow" d="M 235 95 C 260 105, 300 115, 345 75" />
+
+  <!-- Sparkle (Star) Top Right -->
+  <path class="yellow-fill" d="M 320 30 Q 325 40 335 40 Q 325 40 320 50 Q 315 40 305 40 Q 315 40 320 30 Z" />
+</svg>

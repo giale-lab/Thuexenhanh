@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == 'acmecovn.ltd@gmail.com' ||
+        request.auth.token.email == 'huynhbaogia.le@gmail.com' ||
+        request.auth.token.email == 'brandon.gia96@gmail.com'
+      );
+    }
+
+    // ✅ Xe: đọc tự do, tạo cần đăng nhập, sửa/xoá cần là chủ xe hoặc admin
+    match /cars/{carId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      // Cho phép chủ xe và admin cập nhật, kể cả cập nhật rating (status.rating, status.reviewCount)
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.ownerId ||
+        isAdmin() ||
+        // Cho phép bất kỳ user đăng nhập nào cập nhật rating + reviewCount
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+         request.resource.data.status.diff(resource.data.status).affectedKeys().hasOnly(['rating', 'reviewCount']))
+      );
+      allow delete: if request.auth != null && (request.auth.uid == resource.data.ownerId || isAdmin());
+    }
+
+    // ✅ Users: chỉ đọc/ghi tài khoản của mình hoặc admin
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+    
+    // ✅ Yêu cầu nâng cấp: user tạo, admin xem và cập nhật
+    match /upgrade_requests/{reqId} {
+      allow create: if request.auth != null;
+      allow read, update: if isAdmin();
+    }
+    
+    // ✅ Bình luận: đọc tự do, tạo cần đăng nhập, sửa/xoá chỉ chủ bình luận
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // ✅ Báo cáo xe: user tạo, admin quản lý
+    match /reports/{reportId} {
+      allow create: if request.auth != null;
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == resource.data.userId);
+      allow update, delete: if isAdmin();
+    }
+
+    // ✅ Báo cáo cộng đồng: ai cũng tạo được (kể cả ẩn danh), admin quản lý, user đăng nhập đọc được stats
+    match /community_reports/{reportId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+      allow update, delete: if isAdmin();
+    }
+    // ✅ Hòm thư góp ý: user đăng nhập tạo, admin quản lý
+    match /feedbacks/{feedbackId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

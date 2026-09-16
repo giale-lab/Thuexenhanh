@@ -1,0 +1,82 @@
+# =====================================================
+# .htaccess — Thuê Xe Nhanh (DirectAdmin / Apache)
+# Tối ưu: SPA routing, Gzip, Cache, Security headers
+# =====================================================
+
+# ─── Enable mod_rewrite ───
+Options -Indexes
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Force HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+  # SPA: Serve index.html for all non-file, non-directory requests
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# ─── Compression (Gzip) ───
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml application/xml
+  AddOutputFilterByType DEFLATE font/woff2 font/woff application/font-woff2
+</IfModule>
+
+# ─── Browser Caching ───
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # Hashed JS/CSS assets: cache 1 năm (immutable)
+  <FilesMatch "\.(js|css)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Fonts: cache 1 năm
+  <FilesMatch "\.(woff2|woff|ttf|eot)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Hình ảnh: cache 30 ngày
+  <FilesMatch "\.(jpg|jpeg|png|gif|webp|avif|ico|svg)$">
+    ExpiresDefault "access plus 30 days"
+    Header set Cache-Control "max-age=2592000, public"
+  </FilesMatch>
+
+  # index.html & manifest: không cache
+  <FilesMatch "^(index\.html|manifest\.json)$">
+    ExpiresDefault "access"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# ─── Security Headers ───
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(self), payment=()"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.firebaseapp.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://firebasestorage.googleapis.com https://lh3.googleusercontent.com https://images.unsplash.com https://i.ibb.co https://upload.wikimedia.org https://vnigo.sbs; connect-src 'self' data: https://*.googleapis.com https://*.firebaseio.com https://*.firebasestorage.app wss://*.firebaseio.com https://api.imgbb.com; frame-src https://accounts.google.com https://*.firebaseapp.com; object-src 'none'; base-uri 'self';"
+  Header always unset X-Powered-By
+  Header always unset Server
+
+  # CORS for assets
+  <FilesMatch "\.(js|css|woff2|woff)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule>
+
+# ─── Block sensitive files ───
+<FilesMatch "(\.env|\.env\..*|\.gitignore|package\.json|package-lock\.json)">
+  Order allow,deny
+  Deny from all
+</FilesMatch>

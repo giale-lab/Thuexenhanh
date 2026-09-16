@@ -1,0 +1,1013 @@
+import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import * as LucideIcons from 'lucide-react';
+const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
+
+import imageCompression from "browser-image-compression";
+import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
+import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where, limit, orderBy } from "firebase/firestore";
+import "./styles.css";
+
+import * as Core from './core.js';
+import * as Shared from './shared.jsx';
+import * as Cars from './cars.jsx';
+import * as Auth from './auth.jsx';
+import * as Admin from './admin.jsx';
+import * as Demo from './demo.jsx';
+const { DemoScreen } = Demo;
+const { isWeekendRange } = Core;
+const { ADMIN_EMAILS } = Core;
+const { STORAGE_KEY } = Core;
+const { carModelsData } = Core;
+const { brandOptions } = Core;
+const { colorOptions } = Core;
+const { seatOptions } = Core;
+const { yearOptions } = Core;
+const { bodyStyleOptions } = Core;
+const { AMENITY_OPTIONS } = Core;
+const { provinceDistricts } = Core;
+const { locationProvinces } = Core;
+const { locationOptions } = Core;
+const { operatingAreaOptions } = Core;
+const { seedCars } = Core;
+const { emptyForm } = Core;
+const { getFieldGroups } = Core;
+const { formatCompactDateTime } = Core;
+const { formatShortDate } = Core;
+const { getDaysInMonth } = Core;
+const { getFirstDayOfMonth } = Core;
+const { toLocalKey } = Core;
+const { VN_DAYS } = Core;
+const { fmtRangeDate } = Core;
+const { fmtRangeLabel } = Core;
+const { getCarWeight } = Core;
+const { sorters } = Core;
+const { inferSmartFilters } = Core;
+const { activeChips } = Core;
+const { validateCar } = Core;
+const { getOwnerInfo } = Core;
+const { phoneDigits } = Core;
+const { blobToDataUrl } = Core;
+const { getAtPath } = Core;
+const { setAtPath } = Core;
+const { clone } = Core;
+const { normalizeCarForm } = Core;
+const { normalize } = Core;
+const { unique } = Core;
+const { formatCurrency } = Core;
+const { fmtNum } = Core;
+const { statusText } = Core;
+const { formatBusyDates } = Core;
+const { today } = Core;
+const { delay } = Core;
+const { AppLogo } = Shared;
+const { SearchLocationPicker } = Shared;
+const { ErrorBoundary } = Shared;
+const { LazyImage } = Shared;
+const { SkeletonCard } = Shared;
+const { ImageSlider } = Shared;
+const { ModuleFrame } = Shared;
+const { StatusBadge } = Shared;
+const { Field } = Shared;
+const { Toggle } = Shared;
+const { LocationPicker } = Shared;
+const { DepositField } = Shared;
+const { FilterCheckboxGroup } = Shared;
+const { FilterToggle } = Shared;
+const { FilterSelect } = Shared;
+const { Stat } = Shared;
+const { ImageUploadOptimizer } = Shared;
+const { InfoPanel } = Shared;
+const { MapModal } = Shared;
+const { handleOpenMap } = Shared;
+const { Overview } = Cars;
+const { CarCard } = Cars;
+const { CarDetailModal } = Cars;
+const { AddCarForm } = Cars;
+const { DateTimePickerModal } = Cars;
+const { BlockedDatesManager } = Cars;
+const { LoginScreen } = Auth;
+const { AccountSettingsScreen } = Auth;
+const { QuyCheModal } = Auth;
+const { TopUpModal } = Auth;
+const { OwnerWizard } = Auth;
+const { SetLocationPopup } = Auth;
+const { UpgradeModal } = Auth;
+const { FaqModal } = Auth;
+const { CommunityModal } = Auth;
+const { DataProtectionPolicy } = Auth;
+const { AdminDashboard } = Admin;
+
+export default RootApp;
+
+
+function App() {
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("web-thue-xe-user");
+      if (saved) {
+        let parsed = JSON.parse(saved);
+        if (parsed && (parsed.avatar === "/guest-avatar.png" || parsed.avatar === "guest-avatar.png" || parsed.avatar === "/guest-avatar.png")) {
+          parsed.avatar = "/guest-avatar.png";
+          localStorage.setItem("web-thue-xe-user", JSON.stringify(parsed));
+        }
+        return parsed;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [authLoading, setAuthLoading] = useState(true);
+  const [showLocationPopup, setShowLocationPopup] = useState(false);
+  const [cars, setCars] = useState([]);
+  const [carLimit, setCarLimit] = useState(20);
+  const [hasMoreCars, setHasMoreCars] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const initTab = (window.location.pathname.length > 1 || window.location.search) ? "overview" : "landing";
+  const [activeTab, setActiveTab] = useState(initTab);
+  const [editingId, setEditingId] = useState(null);
+  
+  const [showFaq, setShowFaq] = useState(false);
+  const [showCommunity, setShowCommunity] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      setIsInstalled(true);
+    }
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      window.showAlert("Hướng dẫn: Chọn 'Thêm vào màn hình chính' (Add to Home Screen) trên trình duyệt của bạn.");
+    }
+  };
+
+  const activeTabRef = useRef(activeTab);
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+  }, [activeTab]);
+  
+  const [toast, setToast] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [policyGate, setPolicyGate] = useState(null);
+
+  const currentUserRef = useRef(currentUser);
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
+
+  useEffect(() => {
+    window.requirePolicyGate = (callback) => {
+      const user = currentUserRef.current;
+      if (user && !user.agreedPolicy) {
+        setPolicyGate({ cb: callback });
+      } else {
+        callback();
+      }
+    };
+    
+    window.deductTokens = (amount, ownerId, carId, callback) => {
+      const user = currentUserRef.current;
+      if (!user || user.isGuest) {
+        if (window.showAlert) window.showAlert("Vui lòng đăng nhập bằng tài khoản thật để xem thông tin này.");
+        return;
+      }
+      if (user.role === 'admin' || user.uid === ownerId) {
+        callback();
+        return;
+      }
+      if (user.unlockedCars?.includes(carId)) {
+        callback();
+        return;
+      }
+      window.unlockedCars = window.unlockedCars || new Set();
+      if (window.unlockedCars.has(carId)) {
+        callback();
+        return;
+      }
+      if ((user.tokens || 0) < amount) {
+        if (window.showAlert) window.showAlert(`Bạn không đủ Token (cần ${amount} Token). Vui lòng nạp thêm.`);
+        return;
+      }
+      
+      if (window.showConfirm) {
+        window.showConfirm(`Sẽ trừ ${amount} Token để xem thông tin liên hệ. Bạn đồng ý chứ?`, async () => {
+          try {
+            const newTokens = (user.tokens || 0) - amount;
+            const updatedUnlocked = [...(user.unlockedCars || []), carId];
+            await updateDoc(doc(db, "users", user.uid), { tokens: newTokens, unlockedCars: updatedUnlocked });
+            setCurrentUser(prev => ({ ...prev, tokens: newTokens, unlockedCars: updatedUnlocked }));
+            window.unlockedCars.add(carId);
+            callback();
+          } catch(err) {
+            window.showAlert("Lỗi khi trừ Token: " + err.message);
+          }
+        });
+      }
+    };
+    
+    return () => {
+      delete window.requirePolicyGate;
+      delete window.deductTokens;
+    };
+  }, []);
+
+  const handleDeleteCarGlobal = async (id) => {
+    window.showConfirm("Bạn có chắc chắn muốn xóa xe này?", async () => {
+      try {
+        setCars((current) => {
+          const next = current.filter((car) => car.id !== id);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          } catch (err) {}
+          return next;
+        });
+        if (window.location.protocol !== 'file:' && !currentUser?.isGuest) {
+          await deleteDoc(doc(db, "cars", id));
+        }
+        window.showAlert("Đã xóa xe thành công!");
+      } catch (err) {
+        console.error("Lỗi xóa xe:", err);
+        window.showAlert("Lỗi xóa xe: " + err.message);
+      }
+    });
+  };
+
+  useEffect(() => {
+    window.showAlert = (msg) => {
+      setToast({ message: msg });
+      setTimeout(() => setToast(null), 4000);
+    };
+    window.showConfirm = (msg, onConfirm) => {
+      setConfirmDialog({ message: msg, onConfirm });
+    };
+
+    window.history.pushState({ appInit: true }, "");
+    const handlePopState = (e) => {
+      if (e.state && (e.state.modal || e.state.appInit)) {
+        return;
+      }
+      if (activeTabRef.current !== "overview") {
+        setActiveTab("overview");
+        window.history.pushState({ appInit: true }, "");
+        return;
+      }
+      window.showConfirm("Bạn có chắc chắn muốn thoát ứng dụng?", () => {
+        window.removeEventListener('popstate', handlePopState);
+        window.history.back();
+      });
+      window.history.pushState({ appInit: true }, "");
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const adminMode = currentUser?.role === "owner";
+
+  const checkProfileForOwner = () => {
+    if (currentUser?.isGuest) {
+      window.showAlert("Bạn đang dùng tài khoản Khách xem thử. Vui lòng đăng nhập để thao tác.");
+      return false;
+    }
+    if (!currentUser?.email || !currentUser?.phone || !currentUser?.cccdNumber) {
+      window.showAlert("Vui lòng cập nhật đầy đủ Email, SĐT và CCCD trong mục Cá nhân trước.");
+      setActiveTab("account");
+      return false;
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            let finalRole = data.role;
+            if (ADMIN_EMAILS.includes(firebaseUser.email)) finalRole = 'admin';
+            const userData = {
+              ...data,
+              uid: firebaseUser.uid,
+              name: data.name || firebaseUser.displayName,
+              email: data.email || firebaseUser.email,
+              avatar: firebaseUser.photoURL || data.avatar,
+              role: finalRole,
+              createdAt: data.createdAt || firebaseUser.metadata.creationTime
+            };
+            setCurrentUser(userData);
+            localStorage.setItem("web-thue-xe-user", JSON.stringify(userData));
+          } else {
+            setCurrentUser(null);
+          }
+        } catch (error) {
+          const saved = localStorage.getItem("web-thue-xe-user");
+          if (saved) {
+            try {
+              const parsed = JSON.parse(saved);
+              if (parsed && parsed.uid === firebaseUser.uid) {
+                setCurrentUser(parsed);
+              }
+            } catch (e) {}
+          }
+        } finally {
+          setAuthLoading(false);
+        }
+      } else {
+        const saved = localStorage.getItem("web-thue-xe-user");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.isGuest) {
+              setAuthLoading(false);
+              return;
+            }
+          } catch (e) {}
+        }
+        setCurrentUser(null);
+        localStorage.removeItem("web-thue-xe-user");
+      }
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
+    if (window.location.protocol === 'file:') {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const parsed = saved ? JSON.parse(saved) : null;
+      setCars(Array.isArray(parsed) ? parsed : []);
+      setLoading(false);
+      return;
+    }
+    try {
+      const cached = localStorage.getItem(STORAGE_KEY);
+      if (cached) {
+        const parsedCache = JSON.parse(cached);
+        if (Array.isArray(parsedCache) && parsedCache.length > 0) {
+          setCars(parsedCache);
+          setLoading(false);
+        }
+      }
+    } catch (e) {}
+    const carsRef = collection(db, "cars");
+      const q = query(carsRef, limit(carLimit));
+      const unsubscribe = onSnapshot(q, async (snapshot) => {
+      if (snapshot.empty) {
+        try {
+          for (const car of seedCars) {
+            await setDoc(doc(db, "cars", car.id), car);
+          }
+        } catch (err) {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          const parsed = saved ? JSON.parse(saved) : null;
+          setCars(Array.isArray(parsed) ? parsed : []);
+        }
+      } else {
+        const carsList = [];
+        const now = new Date();
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          data.id = doc.id;
+          if (data.status?.isVerified && data.status?.verifiedExpiry) {
+            const expiryDate = new Date((data.status?.verifiedExpiry || ""));
+            if (!isNaN(expiryDate.getTime()) && expiryDate < now) {
+              if (data.status) data.status.isVerified = false;
+            }
+          }
+          carsList.push(data);
+        });
+        carsList.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        const firestoreCarIds = new Set(carsList.map(c => c.id));
+        for (const seed of seedCars) {
+          if (!firestoreCarIds.has(seed.id)) {
+            carsList.push(seed);
+          }
+        }
+        setCars(carsList);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(carsList));
+        } catch (err) {}
+      }
+      setLoading(false);
+      }, (err) => {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const parsed = saved ? JSON.parse(saved) : [];
+        setCars(Array.isArray(parsed) ? parsed : []);
+        setLoading(false);
+      });
+      return () => unsubscribe();
+  }, [!!currentUser, carLimit]);
+
+  const toggleFavorite = async (carId) => {
+    if (!currentUser) {
+      window.showAlert("Vui lòng đăng nhập để lưu xe.");
+      return;
+    }
+    try {
+      const currentFavs = currentUser.favorites || [];
+      const isLiked = currentFavs.includes(carId);
+      const newFavs = isLiked ? currentFavs.filter(id => id !== carId) : [...currentFavs, carId];
+      const updatedUser = { ...currentUser, favorites: newFavs };
+      setCurrentUser(updatedUser);
+      localStorage.setItem("web-thue-xe-user", JSON.stringify(updatedUser));
+      const userRef = doc(db, "users", currentUser.uid);
+      await updateDoc(userRef, { favorites: newFavs });
+      const carRef = doc(db, "cars", carId);
+      const carDoc = await getDoc(carRef);
+      if (carDoc.exists()) {
+        const carData = carDoc.data();
+        const currentPop = carData.status?.popularity || 0;
+        await updateDoc(carRef, {
+          "status.popularity": isLiked ? Math.max(0, currentPop - 1) : currentPop + 1
+        });
+      }
+    } catch (err) {
+      console.error("Lỗi khi cập nhật yêu thích:", err);
+    }
+  };
+
+  const handleSaveCar = async (car) => {
+    try {
+      if (currentUser?.role === 'owner') {
+        if (!currentUser.cccdNumber || !currentUser.cccdImage) {
+          window.showAlert("Vui lòng hoàn thiện thông tin định danh pháp lý (Số CCCD, Ảnh CCCD) trong phần 'Tài khoản' trước khi đăng bài.");
+          return;
+        }
+      }
+      const isNewCar = !car.id;
+      if (isNewCar) {
+        const freePosts = currentUser?.freePosts !== undefined ? currentUser.freePosts : 2;
+        if (freePosts <= 0 && (currentUser?.tokens || 0) < 1) {
+          window.showAlert("Số dư Token của bạn không đủ để đăng bài (Cần 1 Token). Vui lòng nạp thêm Token trong phần Tài khoản.");
+          return;
+        }
+      }
+      const carId = car.id || `CAR-${String(Date.now()).slice(-6)}`;
+      const plate = car.basicInfo?.plate?.trim();
+      if (plate) {
+        const isDuplicate = cars.some(c => c.id !== carId && c.basicInfo?.plate?.trim() === plate);
+        if (isDuplicate) {
+           window.showAlert("Biển số xe này đã tồn tại trên hệ thống. Không thể tạo xe trùng lặp.");
+           return;
+        }
+      }
+      const todayStr = today();
+      const updatedCar = {
+        ...car,
+        id: carId,
+        ownerId: currentUser?.uid,
+        createdAt: car.createdAt || todayStr,
+        updatedAt: todayStr
+      };
+      updatedCar.basicInfo.name = `${updatedCar.basicInfo.brand || ''} ${updatedCar.basicInfo.model || ''} ${updatedCar.basicInfo.version || ''} ${updatedCar.basicInfo.year || ''}`.replace(/\s+/g, ' ').trim();
+      if (window.location.protocol === 'file:' || currentUser?.isGuest) {
+        setCars((current) => {
+          let next;
+          if (car.id && current.some((item) => item.id === car.id)) {
+            next = current.map((item) => (item.id === car.id ? updatedCar : item));
+          } else {
+            next = [updatedCar, ...current];
+          }
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          } catch (err) {}
+          return next;
+        });
+      } else {
+        await setDoc(doc(db, "cars", carId), updatedCar);
+        if (isNewCar && currentUser) {
+          const freePosts = currentUser.freePosts !== undefined ? currentUser.freePosts : 2;
+          if (freePosts > 0) {
+            await updateDoc(doc(db, "users", currentUser.uid), { freePosts: freePosts - 1 });
+            setCurrentUser(prev => ({ ...prev, freePosts: freePosts - 1 }));
+            window.showAlert(`Đã đăng xe thành công! Bạn còn ${freePosts - 1} lượt đăng xe MIỄN PHÍ.`);
+          } else {
+            const newTokens = (currentUser.tokens || 0) - 1;
+            await updateDoc(doc(db, "users", currentUser.uid), { tokens: newTokens });
+            setCurrentUser(prev => ({ ...prev, tokens: newTokens }));
+            window.showAlert("Đã đăng xe thành công! Tài khoản bị trừ 1 Token.");
+          }
+        } else {
+          window.showAlert("Đã lưu thông tin xe thành công.");
+        }
+      }
+      setEditingId(null);
+      setActiveTab("overview");
+    } catch (err) {
+      window.showAlert("Lỗi lưu thông tin xe: " + err.message);
+    }
+  };
+
+  const editingCar = cars.find((car) => car.id === editingId);
+
+  useEffect(() => {
+    if (!adminMode && activeTab === "add") {
+      setActiveTab("overview");
+      setEditingId(null);
+    }
+  }, [adminMode, activeTab]);
+
+  const appLoading = authLoading || (currentUser && loading);
+
+  if (appLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--m-bg)', color: 'var(--m-dark)', fontFamily: 'sans-serif' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ position: 'relative', width: '56px', height: '56px', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '3.5px solid rgba(0,0,0,0.08)', borderRadius: '50%', borderLeftColor: 'var(--m-blue)', animation: 'spin 1s linear infinite' }}></div>
+            <Car size={26} style={{ color: 'var(--m-blue)' }} />
+          </div>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--m-dark)' }}>Thuê Xe Nhanh</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return <LoginScreen 
+      showToast={(msg) => window.showAlert?.(msg) ?? alert(msg)}
+      onLogin={(user) => {
+          setCurrentUser(user);
+          localStorage.setItem("web-thue-xe-user", JSON.stringify(user));
+          setActiveTab("overview");
+        }} 
+    />;
+  }
+
+  return (
+    <div className="app-shell">
+
+      {policyGate && (
+        <DataProtectionPolicy 
+          isModal 
+          currentUser={currentUser} 
+          onSave={(u) => {
+            setCurrentUser(u);
+            localStorage.setItem("web-thue-xe-user", JSON.stringify(u));
+          }}
+          onConfirmSuccess={() => {
+             setPolicyGate(null);
+             if (policyGate.cb) policyGate.cb();
+          }}
+          onBack={() => setPolicyGate(null)}
+          onViewDetails={() => {
+            setPolicyGate(null);
+            setCurrentView("policy_details");
+            setActiveTab("account");
+          }}
+        />
+      )}
+      {/* ── HEADER ── */}
+      <ModuleFrame className="topbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => setActiveTab("landing")}>
+          
+          <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "flex-start", height: 44 }}><img src={LogoImage} alt="Logo" style={{ width: 'auto', height: '100%', objectFit: 'contain' }} /></div>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '18px' }}>Thuê Xe Nhanh</h1>
+            <p className="hide-mobile" style={{ margin: 0, fontSize: '12px', color: 'var(--m-subtle)' }}>Nền tảng thuê xe tự lái siêu tốc</p>
+          </div>
+        </div>
+        <div className="user-profile" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ textAlign: 'right' }} className="hide-mobile">
+            <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--m-dark)' }}>{currentUser.name}</div>
+            <div style={{ fontSize: 12, color: 'var(--m-subtle)' }}>
+              {currentUser.role === 'admin' ? '⚙️ Quản trị viên' : currentUser.role === 'owner' ? 'Chủ xe' : 'Khách thuê'}
+            </div>
+          </div>
+          <img 
+            src={currentUser.avatar} 
+            alt="Avatar" 
+            referrerPolicy="no-referrer"
+            style={{ width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', objectFit: 'cover' }} 
+            onClick={() => setActiveTab("account")}
+            title="Cài đặt tài khoản"
+          />
+          <button className="icon-button" title="Đăng xuất" onClick={() => {
+            window.showConfirm('Bạn có chắc chắn muốn đăng xuất không?', async () => {
+              try {
+                await logout();
+              } catch (e) {
+                console.error("Lỗi khi đăng xuất Firebase:", e);
+              }
+              localStorage.removeItem("web-thue-xe-user");
+              setCurrentUser(null);
+              setActiveTab("overview");
+            });
+          }}>
+            <LogOut size={18} />
+          </button>
+        </div>
+      </ModuleFrame>
+
+      {/* ── TABS ── */}
+      {activeTab !== "account" && activeTab !== "admin" && (adminMode || currentUser?.role === 'admin') && (
+        <ModuleFrame className="tabs">
+        <button id="tab-overview" className={activeTab === "overview" ? "selected" : ""} onClick={() => setActiveTab("overview")}>
+            <LayoutGrid size={17} />
+            {adminMode ? "Xe của tôi" : "Danh sách xe"}
+          </button>
+          {adminMode && (
+            <button id="tab-add" className={activeTab === "add" ? "selected" : ""} onClick={() => {
+              window.requirePolicyGate(() => {
+                if (checkProfileForOwner()) {
+                  setActiveTab("add");
+                }
+              });
+            }}>
+              {editingId ? "Chỉnh sửa xe" : "Thêm xe mới"}
+            </button>
+          )}
+          {currentUser.role === 'admin' && (
+            <button id="tab-admin" className={activeTab === "admin" ? "selected" : ""} onClick={() => setActiveTab("admin")} style={activeTab === 'admin' ? {} : { color: 'var(--m-mid)' }}>
+              <Shield size={17} /> Trang Admin
+            </button>
+          )}
+
+        </ModuleFrame>
+      )}
+
+      {activeTab === "landing" && (
+        <LandingPage onExplore={() => setActiveTab("overview")} />
+      )}
+      
+      {activeTab === "overview" && (
+        <Overview loadMoreCars={() => setCarLimit(prev => prev + 20)} hasMoreCars={cars.length >= carLimit}
+          cars={cars}
+          adminMode={adminMode}
+          currentUser={currentUser}
+          onToggleFavorite={toggleFavorite}
+          onRequestLocation={() => setShowLocationPopup(true)}
+          onEdit={(id) => {
+            window.requirePolicyGate(() => {
+              if (checkProfileForOwner()) {
+                setEditingId(id);
+                setActiveTab("add");
+              }
+            });
+          }}
+          onDelete={async (id) => {
+            window.showConfirm("Bạn có chắc chắn muốn xóa xe này?", async () => {
+              try {
+                if (window.location.protocol === 'file:' || currentUser?.isGuest) {
+                  setCars((current) => {
+                    const next = current.filter((car) => car.id !== id);
+                    try {
+                      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+                    } catch (err) {
+                      console.error("Lỗi lưu offline:", err);
+                    }
+                    return next;
+                  });
+                } else {
+                  await deleteDoc(doc(db, "cars", id));
+                }
+              } catch (err) {
+                console.error("Lỗi xóa xe:", err);
+                window.showAlert("Lỗi xóa xe: " + err.message);
+              }
+            });
+          }}
+          onDuplicate={async (car) => {
+            try {
+              const newId = `CAR-${String(Date.now()).slice(-6)}`;
+              const todayStr = today();
+              const duplicatedCar = {
+                ...car,
+                id: newId,
+                createdAt: todayStr,
+                updatedAt: todayStr
+              };
+
+              if (window.location.protocol === 'file:' || currentUser?.isGuest) {
+                setCars((current) => {
+                  const next = [duplicatedCar, ...current];
+                  try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+                  } catch (err) {
+                    console.error("Lỗi lưu offline:", err);
+                  }
+                  return next;
+                });
+              } else {
+                await setDoc(doc(db, "cars", newId), duplicatedCar);
+              }
+            } catch (err) {
+              console.error("Lỗi nhân bản xe:", err);
+              window.showAlert("Lỗi nhân bản xe: " + err.message);
+            }
+          }}
+          onStatus={async (id, status) => {
+            try {
+              if (window.location.protocol === 'file:' || currentUser?.isGuest) {
+                setCars((current) => {
+                  const next = current.map((car) =>
+                    car.id === id
+                      ? { ...car, rentalInfo: { ...car.rentalInfo, status }, updatedAt: today() }
+                      : car
+                  );
+                  try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+                  } catch (err) {
+                    console.error("Lỗi lưu offline:", err);
+                  }
+                  return next;
+                });
+              } else {
+                const carRef = doc(db, "cars", id);
+                await updateDoc(carRef, {
+                  "rentalInfo.status": status,
+                  updatedAt: today()
+                });
+              }
+            } catch (err) {
+              console.error("Lỗi cập nhật trạng thái:", err);
+              window.showAlert("Lỗi cập nhật trạng thái: " + err.message);
+            }
+          }}
+        />
+      )}
+      
+      {activeTab === "add" && (
+        <AddCarForm editingCar={editingCar} currentUser={currentUser} onSave={handleSaveCar} onCancel={() => { setEditingId(null); setActiveTab("overview"); }} />
+      )}
+
+      {activeTab === "admin" && (
+        <ErrorBoundary>
+          <AdminDashboard cars={cars} currentUser={currentUser} onClose={() => setActiveTab("overview")} onDeleteCar={handleDeleteCarGlobal} />
+        </ErrorBoundary>
+      )}
+
+      {showLocationPopup && (
+        <SetLocationPopup 
+          currentUser={currentUser}
+          onClose={() => setShowLocationPopup(false)}
+          onSave={(updatedUser) => {
+            setCurrentUser(updatedUser);
+            localStorage.setItem("web-thue-xe-user", JSON.stringify(updatedUser));
+            setShowLocationPopup(false);
+          }}
+        />
+      )}
+
+      {activeTab === "account" && (
+        <AccountSettingsScreen 
+          user={currentUser} 
+          cars={cars}
+          onToggleFavorite={toggleFavorite}
+          onClose={() => setActiveTab("overview")} 
+          onAdmin={() => setActiveTab("admin")}
+          onSave={(updatedUser) => {
+            setCurrentUser(updatedUser);
+            localStorage.setItem("web-thue-xe-user", JSON.stringify(updatedUser));
+          }} 
+        />
+      )}
+      {/* Toast Notification */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: 'var(--m-dark)', color: '#fff', padding: '12px 24px', borderRadius: 'var(--r-full)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: 8, boxShadow: 'var(--shadow-lg)' }}>
+          <span>{toast.message}</span>
+        </div>
+      )}
+      {/* Footer */}
+      {/* Footer */}
+      <footer style={{ padding: '32px 16px 120px 16px', background: '#f8fafc', color: 'var(--m-subtle)', fontSize: 13, marginTop: 'auto', borderTop: '1px solid var(--m-border)', lineHeight: 1.6 }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+          {/* Copyright and Links */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <div>
+              <p style={{ margin: 0, fontWeight: 600, color: 'var(--m-dark)' }}>Thuê Xe Nhanh © {new Date().getFullYear()}</p>
+              <p style={{ margin: '4px 0 0', fontSize: 12, opacity: 0.8 }}>Phiên bản thử nghiệm v07.26.2</p>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              {!isInstalled && (
+                 <button onClick={handleInstallClick} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>📲 Tải ứng dụng</button>
+              )}
+              <button onClick={() => setShowCommunity(true)} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>🛡️ Cộng đồng</button>
+              <button onClick={() => setShowFaq(true)} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>❓ FAQ - Hỏi đáp</button>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {showFaq && <FaqModal onClose={() => setShowFaq(false)} />}
+      {showCommunity && <CommunityModal currentUser={currentUser} onClose={() => setShowCommunity(false)} />}
+
+      {/* Confirm Modal */}
+      {confirmDialog && (
+        <div className="modal-backdrop" style={{ zIndex: 9999 }}>
+          <div className="modal-content" style={{ maxWidth: 350, width: '90%', textAlign: 'center', padding: 24, background: 'var(--m-surface)', borderRadius: 'var(--r-xl)', boxShadow: 'var(--shadow-lg)' }}>
+            <h3 style={{ marginBottom: 12, fontSize: 18, color: 'var(--m-dark)' }}>Xác nhận</h3>
+            <p style={{ marginBottom: 24, color: 'var(--m-mid)', fontSize: 14 }}>{confirmDialog.message}</p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button className="secondary" style={{ flex: 1 }} onClick={() => setConfirmDialog(null)}>Hủy</button>
+              <button className="primary" style={{ flex: 1, background: 'var(--m-red)', borderColor: 'var(--m-red)' }} onClick={() => { confirmDialog.onConfirm(); setConfirmDialog(null); }}>Đồng ý</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export { App };
+
+function LandingPage({ onExplore }) {
+  return (
+    <div className="landing-page" style={{ background: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '60px 20px', background: 'linear-gradient(135deg, var(--m-primary) 0%, #1e3a8a 100%)', color: '#fff', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+        <h1 style={{ fontSize: 'clamp(28px, 6vw, 42px)', margin: 0, lineHeight: 1.2, fontWeight: 800, maxWidth: 800 }}>Thuê Xe Tự Lái Chuyên Nghiệp, Giá Rẻ Khắp Việt Nam</h1>
+        <p style={{ fontSize: 'clamp(15px, 3vw, 18px)', margin: 0, maxWidth: 600, lineHeight: 1.5, opacity: 0.9 }}>Nền tảng kết nối trực tiếp chủ xe và người thuê. Không qua trung gian, không phí hoa hồng, thao tác cực nhanh trong 1 phút.</p>
+        <button className="primary-btn" onClick={onExplore} style={{ padding: '14px 32px', fontSize: 18, borderRadius: 100, fontWeight: 700, marginTop: 12, display: 'flex', alignItems: 'center', gap: 8, background: '#fff', color: 'var(--m-primary)', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+          <Search size={20} />
+          Tìm Xe Tự Lái Ngay
+        </button>
+      </div>
+
+      <div style={{ padding: '40px 20px', maxWidth: 1000, margin: '0 auto', width: '100%' }}>
+        <h2 style={{ fontSize: 24, textAlign: 'center', marginBottom: 32, color: 'var(--m-dark)' }}>Tại sao nên chọn Thuê Xe Nhanh?</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+          <div style={{ background: '#fff', padding: 24, borderRadius: 16, border: '1px solid var(--m-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 64, height: 64, background: '#f0f9ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--m-primary)' }}><ShieldCheck size={32} /></div>
+            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--m-dark)' }}>0% Phí Hoa Hồng</h3>
+            <p style={{ margin: 0, fontSize: 14, color: 'var(--m-subtle)', lineHeight: 1.5 }}>Thuê Xe Nhanh cam kết không thu phí môi giới từ khách thuê xe tự lái và chủ xe. Bạn luôn nhận được giá thuê ô tô tự lái tốt nhất.</p>
+          </div>
+          <div style={{ background: '#fff', padding: 24, borderRadius: 16, border: '1px solid var(--m-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 64, height: 64, background: '#fef2f2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}><MapPin size={32} /></div>
+            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--m-dark)' }}>Tìm Xe Gần Bạn Nhất</h3>
+            <p style={{ margin: 0, fontSize: 14, color: 'var(--m-subtle)', lineHeight: 1.5 }}>Hệ thống định vị thông minh giúp bạn dễ dàng tìm thấy hàng ngàn chiếc xe tự lái đang chờ sẵn ngay trong khu vực của bạn.</p>
+          </div>
+          <div style={{ background: '#fff', padding: 24, borderRadius: 16, border: '1px solid var(--m-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 64, height: 64, background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e' }}><BadgeCheck size={32} /></div>
+            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--m-dark)' }}>Thủ Tục Siêu Nhanh</h3>
+            <p style={{ margin: 0, fontSize: 14, color: 'var(--m-subtle)', lineHeight: 1.5 }}>Chỉ cần nhập Token đến và thời gian, trao đổi trực tiếp với chủ xe qua SĐT, chốt hợp đồng và nhận xe ngay tức thì.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: '40px 20px', background: '#fff' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 24, marginBottom: 16, color: 'var(--m-dark)' }}>Hướng Dẫn Cho Thuê Xe Tự Lái & Đi Thuê Xe Tại Thuê Xe Nhanh</h2>
+          <p style={{ fontSize: 15, color: 'var(--m-subtle)', lineHeight: 1.6, marginBottom: 24 }}>Dịch vụ cho thuê xe ô tô tự lái chưa bao giờ đơn giản đến thế. Trải nghiệm ngay với 3 bước:</p>
+          <ul style={{ paddingLeft: 20, fontSize: 15, color: 'var(--m-subtle)', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <li><strong>Bước 1: Tìm thuê xe ô tô:</strong> Sử dụng công cụ tìm kiếm để chọn khu vực, loại xe (4 chỗ, 7 chỗ) phù hợp với nhu cầu thuê xe tự lái của bạn.</li>
+            <li><strong>Bước 2: Chốt xe nhanh:</strong> Gọi điện trực tiếp cho chủ xe để thỏa thuận giá thuê xe tự lái và các thủ tục cần thiết (CCCD, tiền cọc).</li>
+            <li><strong>Bước 3: Nhận xe:</strong> Ký hợp đồng cho thuê xe tự lái, nhận chìa khóa và bắt đầu hành trình tuyệt vời.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div style={{ flex: 1 }}></div>
+    </div>
+  );
+}
+
+function RootApp() {
+  const [toast, setToast] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [showDemo, setShowDemo] = useState(false);
+
+  useEffect(() => {
+    window.showAlert = (msg) => {
+      setToast({ message: msg });
+      setTimeout(() => setToast(null), 4000);
+    };
+    window.showConfirm = (msg, onConfirm) => {
+      setConfirmDialog({ message: msg, onConfirm });
+    };
+  }, []);
+
+  return (
+    <>
+      <App />
+      {/* Toast Notification */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#1e293b', color: '#fff', padding: '12px 24px', borderRadius: 999, zIndex: 99999, display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 24px rgba(0,0,0,.3)', maxWidth: '90vw', textAlign: 'center', fontSize: 14 }}>
+          {toast.message}
+        </div>
+      )}
+      {/* Confirm Dialog */}
+      {confirmDialog && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div style={{ background: '#fff', borderRadius: 20, padding: 28, maxWidth: 340, width: '90%', textAlign: 'center', boxShadow: '0 8px 40px rgba(0,0,0,.2)' }}>
+            <h3 style={{ marginBottom: 10, fontSize: 18, color: '#1e293b' }}>Xác nhận</h3>
+            <p style={{ marginBottom: 24, color: '#64748b', fontSize: 14, lineHeight: 1.6 }}>{confirmDialog.message}</p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="secondary" style={{ flex: 1 }} onClick={() => setConfirmDialog(null)}>Hủy</button>
+              <button className="primary" style={{ flex: 1, background: '#ef4444', borderColor: '#ef4444' }} onClick={() => { confirmDialog.onConfirm(); setConfirmDialog(null); }}>Đồng ý</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <DebugPanel />
+      <button onClick={() => setShowDemo(true)} style={{ position: 'fixed', bottom: 16, right: 16, zIndex: 100000, background: '#8b5cf6', color: 'white', border: 'none', borderRadius: 50, padding: '10px 20px', fontWeight: 600, boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)', cursor: 'pointer' }}>✨ Demo Module</button>
+      {showDemo && <DemoScreen onClose={() => setShowDemo(false)} />}
+    </>
+  );
+}
+
+export { RootApp };
+
+function DebugPanel() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [logs, setLogs] = useState([]);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged(user => {
+      setShow(user && ADMIN_EMAILS.includes(user.email));
+    });
+    
+    window.appLog = (level, message) => {
+      const entry = { time: new Date(), level, message };
+      setLogs(prev => [...prev, entry]);
+      console.log(`[${level.toUpperCase()}] ${message}`);
+    };
+    window.appLog('info', 'App initialized');
+
+    const handleGlobalClick = (e) => {
+      // Don't log clicks inside the debug panel itself to avoid spam
+      if (e.target.closest && e.target.closest('#debug-panel-container')) return;
+
+      const tag = e.target.tagName;
+      const text = e.target.innerText ? e.target.innerText.slice(0, 20) : '';
+      window.appLog('click', `Clicked ${tag} ${text ? `"${text}"` : ''}`);
+    };
+    window.addEventListener('click', handleGlobalClick, true);
+
+    return () => {
+      unsub();
+      window.removeEventListener('click', handleGlobalClick, true);
+      delete window.appLog;
+    };
+  }, []);
+
+  if (!show) return null;
+
+
+
+  if (!isOpen) {
+    return (
+      <button 
+        style={{ position: 'fixed', bottom: 16, left: 16, zIndex: 100000, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)' }}
+        onClick={() => setIsOpen(true)}
+        title="Hiển thị Debug Logs"
+      >
+        <Info size={18} />
+      </button>
+    );
+  }
+
+  return (
+    <div id="debug-panel-container" style={{ position: 'fixed', bottom: 16, left: 16, width: 350, maxHeight: 400, background: '#1e1e1e', color: '#fff', zIndex: 100000, borderRadius: 8, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', fontSize: 12, fontFamily: 'monospace' }}>
+      <div style={{ padding: '8px 12px', borderBottom: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#2d2d2d', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+        <strong>System Logs</strong>
+        <div>
+          <button style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', marginRight: 12 }} onClick={() => setLogs([])}>Clear</button>
+          <button style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer' }} onClick={() => setIsOpen(false)}><X size={14} /></button>
+        </div>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {logs.map((log, i) => (
+          <div key={i} style={{ color: log.level === 'error' ? '#ef4444' : log.level === 'success' ? '#22c55e' : '#e2e8f0', borderBottom: '1px solid #333', paddingBottom: 4 }}>
+            <span style={{ color: '#888', marginRight: 8 }}>{log.time.toLocaleTimeString()}</span>
+            {log.message}
+          </div>
+        ))}
+        {logs.length === 0 && <div style={{ color: '#888', textAlign: 'center', padding: 20 }}>Không có log nào</div>}
+      </div>
+    </div>
+  );
+}
+
+export { DebugPanel };
+
