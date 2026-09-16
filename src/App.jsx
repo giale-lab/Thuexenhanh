@@ -3,14 +3,20 @@ import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
 import imageCompression from "browser-image-compression";
-import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
-import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where, limit, orderBy } from "firebase/firestore";
-import "./styles.css";
 
-import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
-import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from './shared.jsx';
-import { Overview, CarCard, CarDetailModal, AddCarForm, DateTimePickerModal, BlockedDatesManager } from './cars.jsx';
-import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from './auth.jsx';
+
+
+import { AppLogo, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel } from './modules/Shared/UIKit.jsx';
+import { SearchLocationPicker, LocationPicker, MapModal, ErrorBoundary, handleOpenMap } from './modules/Shared/Location.jsx';
+import { Overview } from './modules/Cars/Overview.jsx';
+import { CarCard } from './modules/Cars/CarCard.jsx';
+import { CarDetailModal } from './modules/Cars/CarDetail.jsx';
+import { AddCarForm, DateTimePickerModal, BlockedDatesManager } from './modules/Cars/CarForm.jsx';
+import { LoginScreen } from './modules/Auth/Login.jsx';
+import { AccountSettingsScreen, SetLocationPopup } from './modules/Auth/Account.jsx';
+import { OwnerWizard, QuyCheModal, DataProtectionPolicy, FaqModal, CommunityModal } from './modules/Auth/Onboarding.jsx';
+import { TopUpModal, UpgradeModal } from './modules/Payment/Tokens.jsx';
+
 import { AdminDashboard } from './admin.jsx';
 import { DemoScreen } from './demo.jsx';
 
@@ -506,7 +512,7 @@ function App() {
       <ModuleFrame className="topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => setActiveTab("landing")}>
           
-          <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "flex-start", height: 44 }}><img src={LogoImage} alt="Logo" style={{ width: 'auto', height: '100%', objectFit: 'contain' }} /></div>
+          <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "flex-start", height: 44 }}><img src={"/logo.png"} alt="Logo" style={{ width: 'auto', height: '100%', objectFit: 'contain' }} /></div>
           <div>
             <h1 style={{ margin: 0, fontSize: '18px' }}>Thuê Xe Nhanh</h1>
             <p className="hide-mobile" style={{ margin: 0, fontSize: '12px', color: 'var(--m-subtle)' }}>Nền tảng thuê xe tự lái siêu tốc</p>
