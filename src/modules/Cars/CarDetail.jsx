@@ -8,8 +8,7 @@ import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addD
 import '../../styles.css';
 
 import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
-import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from '../../shared.jsx';
-import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from '../../auth.jsx';
+import { ImageSlider, ModuleFrame, Toggle, Stat, InfoPanel } from '../Shared/UIKit.jsx';
 
 function CarDetailModal({ car, isWeekend, rentalTimeRange, adminMode, currentUser = null, onMap, onClose, onEdit, ownerCarCount, onViewOwner }) {
   const isUnlocked = currentUser?.unlockedCars?.includes(car.id) || (window.unlockedCars && window.unlockedCars.has(car.id)) || adminMode || (currentUser && currentUser.uid === car.ownerId);

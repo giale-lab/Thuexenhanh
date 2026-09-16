@@ -4,12 +4,15 @@ const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, 
 
 import imageCompression from "browser-image-compression";
 import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from '../../firebase';
-import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 import '../../styles.css';
 
 import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
-import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from '../../shared.jsx';
-import { Overview, CarCard, CarDetailModal, AddCarForm, DateTimePickerModal, BlockedDatesManager } from '../../cars.jsx';
+import { ModuleFrame, Toggle, Stat } from '../Shared/UIKit.jsx';
+import { LocationPicker, handleOpenMap } from '../Shared/Location.jsx';
+import { CarCard } from '../Cars/CarCard.jsx';
+import { TopUpModal } from '../Payment/Tokens.jsx';
+import { OwnerWizard, DataProtectionPolicy } from './Onboarding.jsx';
 
 function AccountSettingsScreen({ user, onClose, onSave, cars, onToggleFavorite, onAdmin }) {
   const [currentView, setCurrentView] = useState("menu");
