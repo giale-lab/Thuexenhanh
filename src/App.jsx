@@ -861,7 +861,7 @@ function RootApp() {
             </div>
           </div>
         </div>
-      )} />}
+      )}
     </>
   );
 }
