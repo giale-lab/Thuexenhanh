@@ -1,4 +1,4 @@
-﻿import { LandingPage } from './modules/Landing/LandingPage.jsx';
+import { LandingPage } from './modules/Landing/LandingPage.jsx';
 import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
@@ -221,11 +221,7 @@ function App() {
       window.showAlert("Bạn đang dùng tài khoản Khách xem thử. Vui lòng đăng nhập để thao tác.");
       return false;
     }
-    if (!currentUser?.email || !currentUser?.phone || !currentUser?.cccdNumber) {
-      window.showAlert("Vui lòng cập nhật đầy đủ Email, SĐT và CCCD trong mục Cá nhân trước.");
-      navigate('/cai-dat');
-      return false;
-    }
+    // Tạm thời bỏ qua bước check profile để user xem giao diện form
     return true;
   };
 

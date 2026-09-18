@@ -1,4 +1,4 @@
-# Module: CarForm
+﻿# Module: CarForm
 
 **Đường dẫn**: `src/modules/Cars/CarForm.jsx`
 
@@ -20,3 +20,4 @@
 - [2026-09] Khởi tạo module. Đã cấu trúc kiến trúc đa luồng.
 - [2026-09-18] Fix lỗi "bấm tạo xe mới nhảy qua cài đặt" ở `App.jsx` -> Chuyển hướng chính xác đến `/cai-dat/ho-so` thay vì menu cài đặt chung để người dùng điền thông tin định danh (CCCD, SĐT).
 - [2026-09-18] Fix lỗi ReferenceError: BannerImagePC is not defined khi mở Onboarding Modal. Đã bổ sung import `BannerImagePC` và `BannerImageMobile` từ thư mục assets.
+- [2026-09-18] Tạm thời bỏ qua bước kiểm tra hoàn thiện hồ sơ (`checkProfileForOwner`) khi bấm Thêm xe mới theo yêu cầu của user để tiện xem trước giao diện form.
