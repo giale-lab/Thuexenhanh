@@ -22,7 +22,16 @@ function runCmd(cmd) {
     broadcast({ type: 'log', text: `$ ${cmd}`, color: 'dim' });
     const p = spawn('cmd', ['/c', cmd], { cwd: DIR, shell: true });
     p.stdout.on('data', d => d.toString().split('\n').forEach(l => l.trim() && broadcast({ type: 'log', text: l })));
-    p.stderr.on('data', d => d.toString().split('\n').forEach(l => l.trim() && broadcast({ type: 'log', text: l, color: 'err' })));
+    p.stderr.on('data', d => d.toString().split('\n').forEach(l => {
+      const txt = l.trim();
+      if (!txt) return;
+      if (txt.includes('LF will be replaced by CRLF') || txt.includes('warning: in the working copy')) return;
+      if (txt.startsWith('To https://github.com') || txt.match(/^[a-f0-9]+\.\.[a-f0-9]+/)) {
+        broadcast({ type: 'log', text: txt, color: 'dim' });
+      } else {
+        broadcast({ type: 'log', text: txt, color: 'err' });
+      }
+    }));
     p.on('close', code => resolve(code));
   });
 }

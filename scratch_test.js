@@ -1,4 +1,4 @@
-�import imageCompression from 'browser-image-compression';
+﻿�import imageCompression from 'browser-image-compression';
 import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 

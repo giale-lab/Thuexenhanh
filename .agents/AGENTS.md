@@ -93,7 +93,7 @@
    - Khi chuyển sang Chủ xe lần đầu, hiển thị popup **OwnerWizard**.
    - Nếu hồ sơ đủ (có CCCD, SĐT, Email), khi hoàn tất popup, hệ thống sẽ lưu cờ `ownerWizardCompleted: true` lên Firestore để không hiển thị lại popup này ở các lần sau.
 5. **Hệ thống Credit & Mở khóa SĐT:**
-   - Dùng chung 1 quỹ Điểm chung cho toàn tài khoản. Trừ 5 điểm mỗi lần mở số điện thoại.
+   - Dùng chung 1 quỹ Điểm chung cho toàn tài khoản. Miễn phí (0 Token) mỗi lần mở số điện thoại cho khách thuê (vì khách mang lại tiền).
    - Các xe đã mở SĐT được lưu trong mảng `unlockedCars` trên Firestore.
    - Nếu xe đã nằm trong `unlockedCars`, UI sẽ **tự động hiển thị ngay SĐT** (bỏ qua bước bấm "Liên hệ chủ xe"), và không trừ điểm lại.
 6. **Đồng bộ Dữ liệu Local & Firestore (RẤT QUAN TRỌNG):**
