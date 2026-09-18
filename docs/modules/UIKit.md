@@ -19,3 +19,4 @@
 
 - [2026-09] Khởi tạo module. Đã cấu trúc kiến trúc đa luồng.
 - [2026-09] Thêm BOM (Byte Order Mark) vào các file JS/HTML để sửa triệt để lỗi hiển thị sai font chữ/Mojibake (như Cần Thơ -> Cáº§n ThÆ¡) trên mọi môi trường và trình duyệt.
+- [2026-09] Tái thiết kế toàn bộ giao diện Admin Panel (Layout, Stats, Cars, Users) đồng bộ với hệ thống Mioto Design Tokens. Tối ưu hoàn toàn trải nghiệm Mobile-First.
