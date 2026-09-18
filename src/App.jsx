@@ -24,6 +24,13 @@ import { TopUpModal, UpgradeModal } from './modules/Payment/Tokens.jsx';
 
 export default RootApp;
 
+
+const EditCarRoute = ({ cars, currentUser, onSave, onCancel }) => {
+  const { id } = useParams();
+  const editingCar = id ? cars.find(c => c.id === id) : null;
+  return <AddCarForm editingCar={editingCar} currentUser={currentUser} onSave={onSave} onCancel={onCancel} />;
+};
+
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
@@ -51,7 +58,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const activeTab = useMemo(() => {
-    if (location.pathname === '/dang-xe') return 'add';
+    if (location.pathname === '/dang-xe' || location.pathname.startsWith('/sua-xe/')) return 'add';
     if (location.pathname.startsWith('/cai-dat')) return 'account';
     if (location.pathname === '/admin') return 'admin';
     if (location.pathname === '/trang-chu') return 'overview';
@@ -617,8 +624,7 @@ function App() {
           onEdit={(id) => {
             window.requirePolicyGate(() => {
               if (checkProfileForOwner()) {
-                setEditingId(id);
-                navigate('/dang-xe');
+                navigate('/sua-xe/' + id);
               }
             });
           }}
