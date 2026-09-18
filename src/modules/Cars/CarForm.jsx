@@ -446,6 +446,131 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
 
 export { AddCarForm };
 
+
+function renderCalendarMonth({ 
+  year, month, label, 
+  start, end, hoverDate, 
+  selectMode, 
+  onDayClick, onDayHover, onPrev, onNext, 
+  blockedSet, hoverBlockedSet, dateToRange, ranges, pickStart, popover, onPopover 
+}) {
+  const daysInMonth = getDaysInMonth(year, month);
+  const firstDay = getFirstDayOfMonth(year, month);
+  const todayDate = new Date();
+  todayDate.setHours(0,0,0,0);
+  
+  const cells = [];
+  
+  for (let i = 0; i < firstDay; i++) {
+    cells.push(<div key={`empty-${i}`} className="dt-day empty"></div>);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const current = new Date(year, month, d);
+    const time = current.getTime();
+    const isPast = time < todayDate.getTime();
+    const dayOfWeek = current.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    
+    let className = "dt-day";
+    let isSelected = false;
+    let isBlocked = false;
+    let clickHandler = null;
+    let hoverHandler = null;
+    let extraProps = {};
+    
+    const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    
+    if (!isPast) {
+      if (selectMode === 'blocked') {
+        clickHandler = () => onDayClick && onDayClick(year, month, d, key);
+      } else {
+        clickHandler = () => onDayClick && onDayClick(year, month, d);
+      }
+    } else {
+      className += " disabled";
+    }
+    
+    if (isWeekend) className += " weekend";
+
+    if (selectMode === 'range') {
+      if (start && time === start.getTime()) {
+        className += " selected range-start";
+      }
+      if (end && time === end.getTime()) {
+        className += " selected range-end";
+      }
+      if (start && end && time > start.getTime() && time < end.getTime()) {
+        className += " in-range";
+      } else if (start && !end && hoverDate && time > start.getTime() && time <= hoverDate.getTime()) {
+        className += " in-range";
+      }
+      if (!isPast) hoverHandler = () => onDayHover && onDayHover(current);
+    } else if (selectMode === 'blocked') {
+      if (blockedSet && blockedSet.has(key)) {
+         isBlocked = true;
+         className += " blocked";
+         
+         const idx = dateToRange ? dateToRange[key] : null;
+         if (idx !== null && ranges) {
+           const rangeObj = ranges[idx];
+           className += ` blocked-tag-${rangeObj.tag || 'busy'}`;
+           if (rangeObj.note) className += " blocked-has-note";
+           if (rangeObj.start === key && rangeObj.end === key) {
+               className += " blocked-start blocked-end blocked-solo";
+           } else {
+               if (rangeObj.start === key) className += " blocked-start";
+               if (rangeObj.end === key) className += " blocked-end";
+           }
+           
+           if (onPopover) {
+             extraProps.onClick = (e) => onPopover(idx, key, e);
+           }
+         }
+      }
+      if (hoverBlockedSet && hoverBlockedSet.has(key)) {
+         className += " in-range";
+      }
+      if (!isBlocked && !isPast) {
+         hoverHandler = () => onDayHover && onDayHover(key);
+      }
+    }
+
+    cells.push(
+      <div 
+        key={d} 
+        className={className} 
+        onClick={extraProps.onClick || clickHandler} 
+        onMouseEnter={hoverHandler}
+      >
+        <span style={{ position: 'relative', zIndex: 10 }}>{d}</span>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="dt-cal">
+      <div className="dt-cal-header" style={{ position: 'relative' }}>
+        {onPrev ? <button className="dt-cal-btn prev" onClick={onPrev}><LucideIcons.ChevronLeft size={18} /></button> : <div style={{width: 32}}></div>}
+        <div style={{ fontWeight: 600, flex: 1, textAlign: 'center' }}>Tháng {month + 1}, {year}</div>
+        {onNext ? <button className="dt-cal-btn next" onClick={onNext}><LucideIcons.ChevronRight size={18} /></button> : <div style={{width: 32}}></div>}
+      </div>
+      <div className="dt-days-header" style={{ marginTop: 16, marginBottom: 8 }}>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>T2</div>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>T3</div>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>T4</div>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>T5</div>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>T6</div>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>T7</div>
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--m-subtle)' }}>CN</div>
+      </div>
+      <div className="dt-days-grid">
+        {cells}
+      </div>
+    </div>
+  );
+}
+
 function DateTimePickerModal({ initialStart, initialEnd, initialStartTime, initialEndTime, onClose, onApply }) {
   const [baseDate, setBaseDate] = useState(() => {
     const d = initialStart || new Date();
