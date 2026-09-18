@@ -18,3 +18,5 @@
 > **LƯU Ý DÀNH CHO AI**: Mỗi khi kết thúc một cuộc hội thoại hoặc có thay đổi logic lớn, bạn BẮT BUỘC phải ghi chú lại vào đây bằng tiếng Việt ngắn gọn để đồng bộ với các AI ở luồng khác. Tránh lặp lại kiến thức đã có.
 
 - [2026-09] Khởi tạo module. Đã cấu trúc kiến trúc đa luồng.
+- [2026-09-18] Fix lỗi "bấm tạo xe mới nhảy qua cài đặt" ở `App.jsx` -> Chuyển hướng chính xác đến `/cai-dat/ho-so` thay vì menu cài đặt chung để người dùng điền thông tin định danh (CCCD, SĐT).
+- [2026-09-18] Fix lỗi ReferenceError: BannerImagePC is not defined khi mở Onboarding Modal. Đã bổ sung import `BannerImagePC` và `BannerImageMobile` từ thư mục assets.

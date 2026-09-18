@@ -34,6 +34,10 @@ export default defineConfig({
           if (id.includes('node_modules/browser-image-compression')) {
             return 'vendor-utils';
           }
+          // Mapbox GL: huge, cache forever
+          if (id.includes('node_modules/mapbox-gl')) {
+            return 'vendor-mapbox';
+          }
           // Recharts: large, rarely changes
           if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-') || id.includes('node_modules/recharts-scale') || id.includes('node_modules/victory-vendor')) {
             return 'vendor-recharts';
@@ -48,7 +52,7 @@ export default defineConfig({
     // Report chunk sizes
     reportCompressedSize: true,
     // Chunk size warning at 500KB
-    chunkSizeWarningLimit: 500,
+    chunkSizeWarningLimit: 2000,
   },
   // Optimize dependencies
   optimizeDeps: {

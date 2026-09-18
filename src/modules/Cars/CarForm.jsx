@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
@@ -9,7 +9,7 @@ import '../../styles.css';
 
 import { isWeekendRange, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
 import { ModuleFrame, Field, Toggle, Stat, ImageUploadOptimizer } from '../Shared/UIKit.jsx';
-import { LocationPicker } from '../Shared/Location.jsx';
+import { LocationPicker, MapboxLocationPicker } from '../Shared/Location.jsx';
 import { UpgradeModal } from '../Payment/Tokens.jsx';
 
 function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
@@ -19,6 +19,7 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
     if (currentUser) {
       newForm.ownerInfo.name = currentUser.name || "";
       newForm.ownerInfo.phone = currentUser.phone || currentUser.phoneNumber || "";
+      if (currentUser.location) newForm.location = currentUser.location;
     }
     return newForm;
   });
@@ -39,6 +40,7 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
       if (currentUser) {
         newForm.ownerInfo.name = currentUser.name || "";
         newForm.ownerInfo.phone = currentUser.phone || currentUser.phoneNumber || "";
+        if (currentUser.location) newForm.location = currentUser.location;
       }
       return newForm;
     })());
@@ -217,14 +219,22 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
                 // Replace pickup location with the province+district picker
                 if (path === 'rentalInfo.pickupLocation') {
                   return (
-                    <LocationPicker
-                      key={path}
-                      label={label}
-                      value={form.rentalInfo.pickupLocation}
-                      required={required}
-                      error={errors[path]}
-                      onChange={(v) => setPathValue(path, v)}
-                    />
+                    <Fragment key={path}>
+                      <LocationPicker
+                        label={label}
+                        value={form.rentalInfo.pickupLocation}
+                        required={required}
+                        error={errors[path]}
+                        onChange={(v) => setPathValue(path, v)}
+                      />
+                      <div style={{ marginTop: 16 }}>
+                        <MapboxLocationPicker
+                          label="Vị trí chính xác trên Bản đồ"
+                          value={form.location || null}
+                          onChange={(v) => setForm(prev => ({ ...prev, location: v }))}
+                        />
+                      </div>
+                    </Fragment>
                   );
                 }
                 if (type === 'extra_options_group') {

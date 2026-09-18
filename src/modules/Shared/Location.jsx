@@ -9,6 +9,13 @@ import '../../styles.css';
 
 import { isWeekendRange, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
 
+import Map, { Marker, NavigationControl, GeolocateControl, Popup } from 'react-map-gl/mapbox';
+import useSupercluster from 'use-supercluster';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || "pk.eyJ1IjoiZHVtbXkiLCJhIjoiY2x4bWFjZWFoMDBoazJtb2F4ZnByNDFxeSJ9.dummy";
+
+
 function SearchLocationPicker({ value, onChange }) {
   const [province, setProvince] = useState(() => {
     let v = value;
@@ -191,4 +198,151 @@ const handleOpenMap = (location) => {
 };
 
 export { handleOpenMap };
+
+// --- MAPBOX Location Picker ---
+function MapboxLocationPicker({ value, onChange, label }) {
+  const [viewport, setViewport] = useState({
+    latitude: value?.lat || 10.762622,
+    longitude: value?.lng || 106.660172,
+    zoom: 13
+  });
+  const [marker, setMarker] = useState(value?.lat && value?.lng ? { lat: value.lat, lng: value.lng } : null);
+
+  useEffect(() => {
+    if (value?.lat && value?.lng) {
+      setMarker({ lat: value.lat, lng: value.lng });
+      setViewport(prev => ({ ...prev, latitude: value.lat, longitude: value.lng }));
+    }
+  }, [value?.lat, value?.lng]);
+
+  const handleMapClick = (e) => {
+    const { lng, lat } = e.lngLat;
+    setMarker({ lat, lng });
+    onChange({ ...value, lat, lng });
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, gridColumn: 'span 2' }}>
+      {label && <label style={{ fontWeight: 600, fontSize: 13, color: 'var(--m-dark)' }}>{label} <span style={{fontSize: 11, fontWeight: 400, color: 'var(--m-subtle)'}}>(Kéo thả để chọn toạ độ chính xác)</span></label>}
+      <div style={{ height: 300, width: '100%', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--m-border)', position: 'relative' }}>
+        <Map
+          {...viewport}
+          onMove={evt => setViewport(evt.viewState)}
+          mapStyle="mapbox://styles/mapbox/streets-v12"
+          mapboxAccessToken={MAPBOX_TOKEN}
+          onClick={handleMapClick}
+          cursor="crosshair"
+        >
+          <GeolocateControl position="top-right" trackUserLocation={true} showAccuracyCircle={false} />
+          <NavigationControl position="bottom-right" />
+          {marker && (
+            <Marker longitude={marker.lng} latitude={marker.lat} anchor="bottom">
+              <MapPin size={32} color="var(--m-blue)" fill="white" />
+            </Marker>
+          )}
+        </Map>
+      </div>
+    </div>
+  );
+}
+export { MapboxLocationPicker };
+
+// --- MAPBOX Cluster Viewer ---
+function MapboxClusterViewer({ cars, onCarClick }) {
+  const mapRef = useRef();
+  const [viewport, setViewport] = useState({
+    latitude: 10.762622,
+    longitude: 106.660172,
+    zoom: 11
+  });
+
+  const points = useMemo(() => cars.filter(c => c.location?.lat && c.location?.lng).map(car => ({
+    type: "Feature",
+    properties: { cluster: false, carId: car.id, ...car },
+    geometry: { type: "Point", coordinates: [parseFloat(car.location.lng), parseFloat(car.location.lat)] }
+  })), [cars]);
+
+  const [bounds, setBounds] = useState(null);
+
+  const { clusters, supercluster } = useSupercluster({
+    points,
+    bounds,
+    zoom: viewport.zoom,
+    options: { radius: 75, maxZoom: 20 }
+  });
+
+  return (
+    <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
+      <Map
+        {...viewport}
+        ref={mapRef}
+        onMove={evt => {
+          setViewport(evt.viewState);
+          if (mapRef.current) {
+            const b = mapRef.current.getMap().getBounds();
+            setBounds([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+          }
+        }}
+        onLoad={() => {
+          if (mapRef.current) {
+            const b = mapRef.current.getMap().getBounds();
+            setBounds([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+          }
+        }}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapboxAccessToken={MAPBOX_TOKEN}
+      >
+        <NavigationControl position="bottom-right" />
+        <GeolocateControl position="top-right" trackUserLocation={true} />
+        
+        {clusters.map(cluster => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const { cluster: isCluster, point_count: pointCount } = cluster.properties;
+
+          if (isCluster) {
+            return (
+              <Marker key={`cluster-${cluster.id}`} latitude={latitude} longitude={longitude}>
+                <div
+                  style={{
+                    width: `${30 + (pointCount / points.length) * 20}px`,
+                    height: `${30 + (pointCount / points.length) * 20}px`,
+                    background: 'var(--m-blue)',
+                    color: '#fff',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const expansionZoom = Math.min(supercluster.getClusterExpansionZoom(cluster.id), 20);
+                    mapRef.current?.flyTo({ center: [longitude, latitude], zoom: expansionZoom, duration: 500 });
+                  }}
+                >
+                  {pointCount}
+                </div>
+              </Marker>
+            );
+          }
+
+          return (
+            <Marker key={`car-${cluster.properties.carId}`} latitude={latitude} longitude={longitude} anchor="bottom">
+              <div onClick={(e) => { e.stopPropagation(); onCarClick && onCarClick(cluster.properties.carId); }} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ background: '#fff', padding: '4px 8px', borderRadius: 12, fontWeight: 600, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.2)', marginBottom: 4, whiteSpace: 'nowrap', border: '1px solid var(--m-border)', color: 'var(--m-dark)' }}>
+                  {formatCurrency(cluster.properties.rentalInfo?.price)}
+                </div>
+                <MapPin size={28} color="var(--m-blue)" fill="#fff" />
+              </div>
+            </Marker>
+          );
+        })}
+      </Map>
+    </div>
+  );
+}
+export { MapboxClusterViewer };
+
 

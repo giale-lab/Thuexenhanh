@@ -7,6 +7,9 @@ import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from '../
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 import '../../styles.css';
 
+import BannerImagePC from '../../assets/data_protection_banner_pc.png';
+import BannerImageMobile from '../../assets/data_protection_banner_mobile.png';
+
 import { isWeekendRange, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
 import { Toggle, Stat } from '../Shared/UIKit.jsx';
 

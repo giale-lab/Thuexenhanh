@@ -1,146 +1,275 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Deploy Tool — Thuê Xe Nhanh</title>
+<title>Deploy Tool — FastRent</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0f18;color:#dde2ec;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{display:flex;align-items:center;gap:10px;padding:0 20px;height:48px;background:#131620;border-bottom:1px solid #1e2235;flex-shrink:0}
-.logo{font-size:15px;font-weight:700;color:#fff}.logo b{color:#4fc3f7}
-.branch-badge{margin-left:auto;display:flex;align-items:center;gap:6px;background:#1e2235;border:1px solid #2a2f45;padding:4px 12px;border-radius:20px;font-size:12px}
-.dot{width:7px;height:7px;border-radius:50%;background:#4caf50}
+body{font-family:'Inter',system-ui,sans-serif;background:#ffffff;color:#1c2331;height:100vh;display:flex;flex-direction:column;overflow:hidden;padding:0;}
 
-.layout{display:flex;flex:1;overflow:hidden}
+.app-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  padding: 16px 30px;
+  border-bottom: 1px solid #f0f2f5;
+  background: #fff;
+  flex-shrink: 0;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-icon { 
+  width: 32px; height: 32px; 
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: bold; font-size: 18px;
+}
+.logo-text { font-size: 18px; font-weight: 700; color: #111827; }
+.logo-text span { color: #3b82f6; }
+
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.branch-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: #f3f4f6; padding: 6px 16px; border-radius: 20px;
+  font-size: 13px; font-weight: 600; color: #4b5563;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+
+.layout { display: flex; flex: 1; overflow: hidden; }
 
 /* SIDEBAR */
-.sidebar{width:250px;background:#10121b;border-right:1px solid #1e2235;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
-.sb-sec{padding:14px 12px;border-bottom:1px solid #1a1d2e}
-.sb-lbl{font-size:10px;font-weight:700;color:#546e7a;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px}
+.sidebar {
+  width: 320px;
+  background: #f8fafc;
+  border-right: 1px solid #f0f2f5;
+  display: flex; flex-direction: column;
+  padding: 24px; overflow-y: auto;
+  flex-shrink: 0;
+}
 
-.abtn{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:1px solid transparent;border-radius:10px;cursor:pointer;background:transparent;transition:all .15s;margin-bottom:6px}
-.abtn:disabled{opacity:.4;cursor:not-allowed}
-.abtn .ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.abtn .txt strong{display:block;font-size:13px;font-weight:600;color:#e8eaf6;text-align:left}
-.abtn .txt span{display:block;font-size:11px;color:#546e7a;text-align:left;margin-top:1px}
+.section-title {
+  font-size: 12px; font-weight: 700; color: #64748b;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+}
 
-.abtn-test{border-color:#1a2744}.abtn-test .ico{background:#0d1f44;color:#64b5f6}
-.abtn-test:hover:not(:disabled){background:#131d35;border-color:#2a4070}
-.abtn-dev{border-color:#1a2e1a}.abtn-dev .ico{background:#0d270d;color:#81c784}
-.abtn-dev:hover:not(:disabled){background:#131f13;border-color:#2a4a2a}
-.abtn-main{border-color:#2e1a1a}.abtn-main .ico{background:#270d0d;color:#e57373}
-.abtn-main:hover:not(:disabled){background:#1f1313;border-color:#4a2a2a}
+.action-card {
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px;
+}
+.btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 14px; border: none;
+  cursor: pointer; transition: all 0.2s; text-align: left;
+  background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #181b2a}
-.stat:last-child{border:none}
-.stat .k{font-size:11px;color:#546e7a}.stat .v{font-size:12px;font-weight:600}
-.ok{color:#66bb6a}.warn{color:#ffd54f}.err{color:#ef5350}
+.btn-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.btn-text strong { display: block; font-size: 14px; font-weight: 600; color: #0f172a; }
+.btn-text span { display: block; font-size: 12px; color: #64748b; margin-top: 2px; }
 
-.commit-item{background:#13162060;border:1px solid #1e2235;border-radius:8px;padding:7px 10px;margin-bottom:5px}
-.commit-item .ch{font-family:monospace;font-size:10px;color:#4fc3f7;margin-bottom:2px}
-.commit-item .cm{font-size:11px;color:#b0bec5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.commit-item .ca{font-size:10px;color:#37474f;margin-top:1px}
+/* Specific Buttons */
+.btn-test { border: 1px solid #e0e7ff; }
+.btn-test .btn-icon { background: #e0e7ff; color: #4338ca; }
+.btn-test:hover:not(:disabled) { border-color: #c7d2fe; }
 
-/* RIGHT */
-.right{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.btn-dev { border: 1px solid #dcfce7; }
+.btn-dev .btn-icon { background: #dcfce7; color: #15803d; }
+.btn-dev:hover:not(:disabled) { border-color: #bbf7d0; }
 
-/* Steps */
-.steps-wrap{flex-shrink:0;border-bottom:1px solid #1e2235;padding:12px 16px}
-.steps-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.step-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid #1e2235;background:#0d0f18;font-size:12px;font-weight:500;color:#546e7a;transition:all .2s;white-space:nowrap}
-.step-chip .si{font-size:13px}
-.step-chip.waiting{opacity:.4}
-.step-chip.running{border-color:#1565c0;background:#081828;color:#90caf9}
-.step-chip.running .si{animation:spin .7s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
-.step-chip.ok{border-color:#2e7d32;background:#071408;color:#81c784}
-.step-chip.fail{border-color:#b71c1c;background:#180808;color:#ef9a9a}
-.step-sep{color:#1e2235;font-size:14px}
+.btn-main { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; border: none; }
+.btn-main .btn-icon { background: rgba(255,255,255,0.2); color: white; }
+.btn-main .btn-text strong { color: white; }
+.btn-main .btn-text span { color: rgba(255,255,255,0.8); }
+.btn-main:hover:not(:disabled) { box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3); }
 
-.pipe-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.pipe-title{font-size:12px;font-weight:600;color:#78909c}
-.timer{font-size:11px;color:#37474f;font-variant-numeric:tabular-nums}
+/* Stats Area */
+.stat-box {
+  background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px;
+  margin-bottom: 24px;
+}
+.stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.stat-row:last-child { margin-bottom: 0; }
+.stat-k { font-size: 13px; color: #64748b; font-weight: 500; }
+.stat-v { font-size: 14px; font-weight: 600; color: #0f172a; }
+.ok-text { color: #10b981; }
 
-/* Log */
-.log-area{flex:1;overflow-y:auto;padding:12px 16px;font-family:'Cascadia Code','Consolas',monospace;font-size:12px;line-height:1.8;white-space:pre-wrap;word-break:break-all;background:#090b12}
-.l-dim{color:#2e3a40}.l-ok{color:#81c784}.l-err{color:#ef9a9a}.l-yellow{color:#ffd54f}
+.changes-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.change-item {
+  display: flex; align-items: center; gap: 8px; font-size: 12px;
+  background: #f8fafc; padding: 6px 10px; border-radius: 6px;
+}
+.ch-badge { width: 20px; font-weight: bold; text-align: center; }
 
-/* Input */
-.input-bar{display:flex;gap:8px;padding:10px 14px;background:#10121b;border-top:1px solid #1e2235;flex-shrink:0}
-.input-bar input{flex:1;background:#13162060;border:1px solid #1e2235;border-radius:8px;padding:8px 12px;color:#dde2ec;font-size:12px;outline:none;transition:border-color .15s}
-.input-bar input:focus{border-color:#1565c0}
-.input-bar input::placeholder{color:#2e3a40}
-.rbtn{background:#13162060;border:1px solid #1e2235;color:#546e7a;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:15px}
-.rbtn:hover{color:#90a4ae}
+/* MAIN AREA */
+.main-area {
+  flex: 1; display: flex; flex-direction: column; background: #ffffff;
+}
 
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#1e2235;border-radius:2px}
+/* Overview Stats */
+.overview-grid {
+  padding: 24px 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+  background: #f8fafc; border-bottom: 1px solid #f0f2f5; flex-shrink: 0;
+}
+.ov-card {
+  background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.ov-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+.ov-val { font-size: 24px; font-weight: 700; color: #0f172a; }
+.ov-sub { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+/* Steps Pipeline */
+.pipeline-header {
+  padding: 24px 32px 16px; border-bottom: 1px solid #f0f2f5;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pipe-title { font-size: 18px; font-weight: 700; color: #0f172a; }
+.pipe-timer { font-size: 14px; color: #64748b; font-variant-numeric: tabular-nums; font-weight: 500; }
+
+.steps-row {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  padding: 16px 32px; border-bottom: 1px solid #f0f2f5; background: #f8fafc;
+}
+.step-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0;
+  background: white; font-size: 13px; font-weight: 600; color: #64748b;
+}
+.step-chip.waiting { opacity: 0.5; }
+.step-chip.running { border-color: #3b82f6; background: #eff6ff; color: #2563eb; }
+.step-chip.running .si { animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.step-chip.ok { border-color: #10b981; background: #ecfdf5; color: #059669; }
+.step-chip.fail { border-color: #ef4444; background: #fef2f2; color: #dc2626; }
+.step-sep { color: #cbd5e1; font-size: 16px; }
+
+/* Log Area */
+.log-container {
+  flex: 1; padding: 24px 32px; overflow-y: auto; background: #0f172a;
+}
+.log-area {
+  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 13px; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap; word-break: break-all;
+}
+.l-dim { color: #64748b; }
+.l-ok { color: #34d399; font-weight: bold; }
+.l-err { color: #f87171; }
+.l-yellow { color: #fbbf24; }
+.prompt-box {
+  background: rgba(255,255,255,0.1); border-left: 4px solid #fbbf24;
+  padding: 12px; margin-top: 8px; border-radius: 4px;
+}
+
+/* Input Bar */
+.input-bar {
+  display: flex; gap: 12px; padding: 16px 32px;
+  background: white; border-top: 1px solid #f0f2f5; align-items: center;
+}
+.input-bar input {
+  flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+  padding: 12px 16px; color: #0f172a; font-size: 14px; outline: none; transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.input-bar input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); background: white; }
+.refresh-btn {
+  background: white; border: 1px solid #e2e8f0; color: #64748b;
+  width: 44px; height: 44px; border-radius: 12px; cursor: pointer;
+  font-size: 18px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+}
+.refresh-btn:hover { background: #f8fafc; color: #0f172a; border-color: #cbd5e1; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+.log-container::-webkit-scrollbar-thumb { background: #334155; }
 </style>
 </head>
 <body>
-<header>
-  <span>🚗</span>
-  <div class="logo">Thuê Xe <b>Nhanh</b> — Deploy Tool</div>
-  <div class="branch-badge"><div class="dot"></div><span id="hBranch">dev</span></div>
-</header>
 
-<div class="layout">
-  <div class="sidebar">
-    <div class="sb-sec">
-      <div class="sb-lbl">Hành Động</div>
-
-      <button class="abtn abtn-test" id="btnTest" onclick="doAction('test')">
-        <div class="ico">⚡</div>
-        <div class="txt"><strong>Test</strong><span>Mở server xem thử trên máy</span></div>
-      </button>
-
-      <button class="abtn abtn-dev" id="btnDev" onclick="doAction('dev')">
-        <div class="ico">🔧</div>
-        <div class="txt"><strong>Dev</strong><span>Kiểm tra + Đẩy lên nhánh Dev</span></div>
-      </button>
-
-      <button class="abtn abtn-main" id="btnMain" onclick="doAction('main')">
-        <div class="ico">🚀</div>
-        <div class="txt"><strong>Main</strong><span>Đẩy Dev lên bản chính thức</span></div>
-      </button>
+<div class="app-container">
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">FR</div>
+      <div class="logo-text">FastRent <span>Deploy</span></div>
     </div>
-
-    <div class="sb-sec">
-      <div class="sb-lbl">Tổng Quan</div>
-      <div class="stat"><span class="k">Nhánh</span><span class="v ok" id="ovBranch">—</span></div>
-      <div class="stat"><span class="k">Chưa commit</span><span class="v" id="ovChanged">—</span></div>
-      <div class="stat"><span class="k">Trạng thái</span><span class="v ok" id="ovStatus">Sẵn sàng</span></div>
+    <div class="header-right">
+      <div class="branch-badge"><div class="dot"></div><span id="hBranch">dev</span></div>
     </div>
+  </header>
 
-    <div class="sb-sec">
-      <div class="sb-lbl">Code Thay Đổi (Chưa commit)</div>
-      <div id="codeStat" style="font-size:11px;color:#90a4ae;margin-bottom:8px;font-style:italic">—</div>
-      <div id="changesList" style="display:flex;flex-direction:column;gap:4px">
-         <!-- files will go here -->
+  <div class="layout">
+    <div class="sidebar">
+      <div class="section-title">Actions</div>
+      <div class="action-card">
+        <button class="btn btn-test" id="btnTest" onclick="doAction('test')">
+          <div class="btn-icon">⚡</div>
+          <div class="btn-text"><strong>Lint & Check</strong><span>Check code, prompt on error</span></div>
+        </button>
+
+        <button class="btn btn-dev" id="btnDev" onclick="doAction('dev')">
+          <div class="btn-icon">🔧</div>
+          <div class="btn-text"><strong>Deploy Preview</strong><span>Push to dev for testing</span></div>
+        </button>
+
+        <button class="btn btn-main" id="btnMain" onclick="doAction('main')">
+          <div class="btn-icon">🚀</div>
+          <div class="btn-text"><strong>Deploy Live</strong><span>Push to main branch</span></div>
+        </button>
+      </div>
+
+      <div class="section-title">Uncommitted Changes</div>
+      <div class="stat-box">
+        <div class="stat-row"><span class="stat-k">Current Branch</span><span class="stat-v" id="ovBranch">—</span></div>
+        <div class="stat-row" style="margin-top:12px"><span class="stat-k">Unsaved Files</span><span class="stat-v" id="ovChanged">—</span></div>
+        <div class="stat-row" style="margin-top:4px"><span class="stat-k" style="font-size:11px;color:#94a3b8" id="codeStat">—</span></div>
+        
+        <div id="changesList" class="changes-list"></div>
       </div>
     </div>
 
-    <div class="sb-sec" style="border:none;flex:1">
-      <div class="sb-lbl">Lịch sử commit</div>
-      <div id="commitList"></div>
-    </div>
-  </div>
-
-  <div class="right">
-    <div class="steps-wrap">
-      <div class="pipe-header">
-        <span class="pipe-title" id="pTitle">Chưa có tiến trình</span>
-        <span class="timer" id="pTimer"></span>
+    <div class="main-area">
+      <div class="overview-grid" id="ovGrid">
+        <!-- Stats injected by JS -->
       </div>
+
+      <div class="pipeline-header">
+        <div class="pipe-title" id="pTitle">Ready</div>
+        <div class="pipe-timer" id="pTimer">0s</div>
+      </div>
+      
       <div class="steps-row" id="stepsRow">
-        <div class="step-chip waiting"><span class="si">○</span> Chờ lệnh</div>
+        <div class="step-chip waiting"><span class="si">○</span> Waiting for command</div>
       </div>
-    </div>
 
-    <div id="logArea" class="log-area"><span class="l-dim">// Chọn một hành động bên trái để bắt đầu...</span></div>
+      <div id="alertsContainer" style="display:none; padding: 16px 32px; background: #fffbeb; border-bottom: 1px solid #fde68a;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+          <strong style="color: #d97706; font-size: 13px;">⚠️ Warnings / Errors:</strong>
+          <button id="copyAlertsBtn" onclick="copyAlerts()" style="background: white; border: 1px solid #fcd34d; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; color: #b45309; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s">📋 Copy Errors</button>
+        </div>
+        <div id="alertsContent" style="font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; color: #92400e; white-space: pre-wrap; max-height: 120px; overflow-y: auto; padding: 10px; background: rgba(255,255,255,0.6); border-radius: 6px; border: 1px dashed #fcd34d"></div>
+      </div>
 
-    <div class="input-bar">
-      <input type="text" id="commitMsg" placeholder="Ghi chú commit (dùng khi bấm Dev)..."/>
-      <button class="rbtn" onclick="refreshInfo()" title="Làm mới">↻</button>
+      <div class="log-container">
+        <div id="logArea" class="log-area"><span class="l-dim">// Click a button on the left to start...</span></div>
+      </div>
+
+      <div class="input-bar">
+        <input type="text" id="commitMsg" placeholder="Enter commit message (e.g., Fix UI layout)..."/>
+        <button class="refresh-btn" onclick="refreshInfo()" title="Refresh Status">↻</button>
+      </div>
     </div>
   </div>
 </div>
@@ -155,11 +284,14 @@ es.onmessage = e => {
 
   if (d.type === 'start') {
     document.getElementById('logArea').innerHTML = '';
+    document.getElementById('alertsContainer').style.display = 'none';
+    document.getElementById('alertsContent').textContent = '';
     document.getElementById('pTitle').textContent = {
-      dev:  '🔧 Deploy Dev',
-      main: '🚀 Deploy Main'
+      test: '⚡ Lint & Check Code',
+      dev:  '🔧 Deploying Preview (Dev)',
+      main: '🚀 Deploying Live (Main)'
     }[d.action] || '';
-    // Render step chips
+    
     const row = document.getElementById('stepsRow');
     row.innerHTML = d.steps.map((s, i) =>
       `${i > 0 ? '<span class="step-sep">›</span>' : ''}
@@ -167,14 +299,14 @@ es.onmessage = e => {
          <span class="si">○</span> ${s.label}
        </div>`
     ).join('');
+    
     running = true;
     setButtons(true);
     timerStart = Date.now();
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
-      document.getElementById('pTimer').textContent = `⏱ ${((Date.now()-timerStart)/1000).toFixed(0)}s`;
+      document.getElementById('pTimer').textContent = `${((Date.now()-timerStart)/1000).toFixed(0)}s`;
     }, 500);
-    setStatus('Đang xử lý...', 'warn');
   }
 
   else if (d.type === 'step') {
@@ -182,43 +314,70 @@ es.onmessage = e => {
     if (!chip) return;
     const icons = { running: '⟳', ok: '✓', fail: '✗' };
     chip.className = `step-chip ${d.state}`;
-    chip.innerHTML = `<span class="si">${icons[d.state]||'○'}</span> ${chip.textContent.trim().slice(1).trim()}${d.elapsed ? ` <small style="opacity:.6">${d.elapsed}s</small>` : ''}`;
+    chip.innerHTML = `<span class="si">${icons[d.state]||'○'}</span> ${chip.textContent.trim().slice(1).trim()}${d.elapsed ? ` <small style="opacity:.7; margin-left:4px">${d.elapsed}s</small>` : ''}`;
   }
 
   else if (d.type === 'log') {
     const la = document.getElementById('logArea');
-    const s = document.createElement('span');
-    s.className = { err:'l-err', ok:'l-ok', yellow:'l-yellow', dim:'l-dim' }[d.color] || '';
-    s.textContent = d.text + '\n';
-    la.appendChild(s);
-    la.scrollTop = la.scrollHeight;
+    const isPrompt = d.text.includes('Code bị lỗi khi kiểm tra') || d.text.includes('encountered errors during build check');
+    
+    // Pin errors and warnings
+    const textLower = d.text.toLowerCase();
+    if (d.color === 'err' || textLower.includes('(!)') || textLower.includes('⚠') || textLower.includes('warning') || textLower.includes('error')) {
+      const ac = document.getElementById('alertsContent');
+      document.getElementById('alertsContainer').style.display = 'block';
+      ac.textContent += d.text + '\n';
+      ac.scrollTop = ac.scrollHeight;
+    }
+    
+    if (isPrompt) {
+      const box = document.createElement('div');
+      box.className = 'prompt-box';
+      box.textContent = d.text;
+      la.appendChild(box);
+    } else {
+      const s = document.createElement('span');
+      s.className = { err:'l-err', ok:'l-ok', yellow:'l-yellow', dim:'l-dim' }[d.color] || '';
+      s.textContent = d.text + '\n';
+      la.appendChild(s);
+    }
+    
+    // Auto scroll to bottom
+    const container = la.parentElement;
+    container.scrollTop = container.scrollHeight;
   }
 
   else if (d.type === 'done') {
     clearInterval(timerInterval);
     const total = ((Date.now()-timerStart)/1000).toFixed(1);
-    document.getElementById('pTimer').textContent = `${d.code === 0 ? '✓' : '✗'} ${total}s`;
+    document.getElementById('pTimer').textContent = `${d.code === 0 ? 'Completed ✓' : 'Failed ✗'} (${total}s)`;
     running = false;
     setButtons(false);
-    setStatus(d.code === 0 ? 'Thành công ✓' : 'Có lỗi — cần sửa', d.code === 0 ? 'ok' : 'err');
     if (d.code === 0) setTimeout(refreshInfo, 1500);
   }
 };
 
-function setButtons(disabled) {
-  ['btnDev','btnMain'].forEach(id => document.getElementById(id).disabled = disabled);
+function copyAlerts() {
+  const text = document.getElementById('alertsContent').textContent;
+  navigator.clipboard.writeText(text);
+  const btn = document.getElementById('copyAlertsBtn');
+  btn.textContent = '✓ Copied!';
+  btn.style.background = '#dcfce7';
+  setTimeout(() => {
+    btn.textContent = '📋 Copy Errors';
+    btn.style.background = 'white';
+  }, 2000);
 }
 
-function setStatus(text, cls) {
-  const el = document.getElementById('ovStatus');
-  el.textContent = text; el.className = 'v ' + cls;
+function setButtons(disabled) {
+  ['btnTest','btnDev','btnMain'].forEach(id => document.getElementById(id).disabled = disabled);
 }
 
 function doAction(action) {
-  if (action !== 'test' && running) return;
+  if (running) return;
   const msg = document.getElementById('commitMsg').value;
   if (action === 'test') {
-    fetch('/action/test');
+    fetch('/action/test', { method: 'POST' });
     return;
   }
   fetch('/action/' + action, { method: 'POST', body: JSON.stringify({ msg }), headers: { 'Content-Type': 'application/json' } });
@@ -231,26 +390,72 @@ function refreshInfo() {
     
     const ch = d.changedCount || 0;
     const el = document.getElementById('ovChanged');
-    el.textContent = ch === 0 ? '0 file' : `${ch} file`;
-    el.className = 'v ' + (ch === 0 ? 'ok' : 'warn');
+    el.textContent = ch === 0 ? '0 files' : `${ch} files`;
+    el.className = 'stat-v ' + (ch === 0 ? 'ok-text' : '');
     
-    document.getElementById('codeStat').textContent = d.stat || 'Không có thay đổi dòng';
+    document.getElementById('codeStat').textContent = d.stat || 'No line changes.';
     
     const changesHTML = (d.changesList || []).map(f => {
-      let color = '#546e7a';
-      if (f.type.includes('M')) color = '#4fc3f7'; // modified (blue)
-      if (f.type.includes('A') || f.type.includes('?')) color = '#81c784'; // added (green)
-      if (f.type.includes('D')) color = '#ef5350'; // deleted (red)
-      return `<div style="display:flex;align-items:center;gap:6px;font-size:11px">
-                <span style="color:${color};font-weight:bold;width:16px;text-align:center">${f.type}</span>
-                <span style="color:#cfd8dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${f.file}">${f.file}</span>
+      let color = '#64748b', bg = '#f1f5f9';
+      if (f.type.includes('M')) { color = '#0ea5e9'; bg = '#e0f2fe'; }
+      if (f.type.includes('A') || f.type.includes('?')) { color = '#10b981'; bg = '#d1fae5'; }
+      if (f.type.includes('D')) { color = '#ef4444'; bg = '#fee2e2'; }
+      
+      return `<div class="change-item">
+                <div class="ch-badge" style="color:${color};background:${bg};border-radius:4px">${f.type.replace('?','+').trim()}</div>
+                <div style="color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${f.file}">${f.file}</div>
               </div>`;
     }).join('');
-    document.getElementById('changesList').innerHTML = changesHTML || '<span style="font-size:11px;color:#37474f">Sạch sẽ, không có file nào thay đổi.</span>';
+    document.getElementById('changesList').innerHTML = changesHTML || '<div style="font-size:12px;color:#94a3b8;font-style:italic">Clean, no files changed.</div>';
 
-    document.getElementById('commitList').innerHTML = (d.logs||[]).map(c =>
-      `<div class="commit-item"><div class="ch">${c.h}</div><div class="cm">${c.m}</div><div class="ca">${c.t}</div></div>`
-    ).join('') || '<span style="font-size:11px;color:#37474f">Chưa có commit</span>';
+    // Populate Overview Stats
+    const ps = d.pStats || { totalLines:0, totalFiles:0, reactModules:0, jsFiles:0, cssFiles:0 };
+    const lastCommit = (d.logs && d.logs[0]) ? d.logs[0].m : 'None';
+    const lastTime = (d.logs && d.logs[0]) ? d.logs[0].t : '';
+
+    const mods = d.updatedModulesDetailed || [];
+    let modsHTML = '';
+    if (mods.length === 0) {
+      modsHTML = `<div style="font-size:13px; color:#64748b; padding:8px 0;">No modules changed.</div>`;
+    } else {
+      modsHTML = `<div style="display:flex; flex-wrap:wrap; gap:12px;">`;
+      mods.forEach(m => {
+        let tColor = m.type.includes('M') ? '#0ea5e9' : (m.type.includes('D') ? '#ef4444' : '#10b981');
+        modsHTML += `
+          <div style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:12px; width:220px; box-shadow:0 1px 3px rgba(0,0,0,0.02)">
+            <div style="font-weight:600; font-size:13px; color:#0f172a; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis" title="${m.name}">${m.name}</div>
+            <div style="font-size:11px; color:#64748b; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis" title="${m.path}">${m.path}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:11px; font-weight:700; color:${tColor}; background:${tColor}15; padding:2px 6px; border-radius:4px;">${m.type.replace('?','+')}</span>
+              <span style="font-size:11px; font-family:monospace; color:#64748b;"><span style="color:#10b981">+${m.ins}</span> / <span style="color:#ef4444">-${m.del}</span></span>
+            </div>
+          </div>
+        `;
+      });
+      modsHTML += `</div>`;
+    }
+
+    const grid = document.getElementById('ovGrid');
+    if (grid) {
+      grid.innerHTML = `
+        <div class="ov-card"><div class="ov-title">Total Lines of Code</div><div class="ov-val" style="color:#2563eb">${(ps.totalLines||0).toLocaleString()}</div><div class="ov-sub">Across the entire project</div></div>
+        
+        <div class="ov-card"><div class="ov-title">Total Files</div><div class="ov-val">${ps.totalFiles||0}</div><div class="ov-sub">Excluding node_modules</div></div>
+        
+        <div class="ov-card"><div class="ov-title">React Modules</div><div class="ov-val" style="color:#059669">${ps.reactModules||0}</div><div class="ov-sub">.jsx components</div></div>
+        
+        <div class="ov-card"><div class="ov-title">Logic & Style</div><div class="ov-val" style="color:#d97706">${(ps.jsFiles||0) + (ps.cssFiles||0)}</div><div class="ov-sub">${ps.jsFiles||0} JS files, ${ps.cssFiles||0} CSS files</div></div>
+        
+        <div class="ov-card"><div class="ov-title">Working Branch</div><div class="ov-val" style="color:#4f46e5">${d.branch||'—'}</div><div class="ov-sub">Current git branch</div></div>
+        
+        <div class="ov-card"><div class="ov-title">Latest Commit</div><div class="ov-val" style="font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${lastCommit}">${lastCommit}</div><div class="ov-sub">${lastTime}</div></div>
+        
+        <div style="grid-column: 1 / -1; margin-top: 8px; border-top: 1px dashed #cbd5e1; padding-top: 16px;">
+          <div style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:12px">Updated Modules Breakdown</div>
+          ${modsHTML}
+        </div>
+      `;
+    }
   });
 }
 

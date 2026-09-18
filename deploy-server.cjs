@@ -8,8 +8,13 @@ const DIR = __dirname;
 let clients = [];
 
 function broadcast(data) {
+  if (data.text) data.text = stripAnsi(data.text);
   const msg = `data: ${JSON.stringify(data)}\n\n`;
   clients = clients.filter(r => { try { r.write(msg); return true; } catch { return false; } });
+}
+
+function stripAnsi(str) {
+  return str.replace(/\x1B(?:\[[0-?]*[ -/]*[@-~])/g, '');
 }
 
 function runCmd(cmd) {
@@ -41,13 +46,42 @@ async function pipeline(action, steps) {
   return true;
 }
 
+function getProjectStats() {
+  const stats = { totalFiles: 0, totalLines: 0, reactModules: 0, cssFiles: 0, jsFiles: 0, moduleNames: [] };
+  function walk(dir) {
+    if (!fs.existsSync(dir)) return;
+    const files = fs.readdirSync(dir);
+    for (const f of files) {
+      if (['node_modules', 'dist', 'dist-offline', '.git', '.firebase'].includes(f)) continue;
+      const fullPath = path.join(dir, f);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        walk(fullPath);
+      } else {
+        stats.totalFiles++;
+        if (f.endsWith('.jsx')) { stats.reactModules++; stats.moduleNames.push(f); }
+        else if (f.endsWith('.css')) stats.cssFiles++;
+        else if (f.endsWith('.js') || f.endsWith('.cjs')) stats.jsFiles++;
+        
+        if (f.match(/\.(js|jsx|css|html|json|md)$/)) {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          stats.totalLines += content.split('\n').length;
+        }
+      }
+    }
+  }
+  try { walk(DIR); } catch(e){}
+  return stats;
+}
+
 function getGitInfo(cb) {
-  exec('git log -5 --pretty=format:"%h|%s|%ar" && echo ---BRANCH--- && git branch --show-current && echo ---CHANGED--- && git status --short && echo ---STAT--- && git diff HEAD --shortstat', { cwd: DIR }, (e, out) => {
+  exec('git log -5 --pretty=format:"%h|%s|%ar" && echo ---BRANCH--- && git branch --show-current && echo ---CHANGED--- && git status --short && echo ---STAT--- && git diff HEAD --shortstat && echo ---NUMSTAT--- && git diff HEAD --numstat', { cwd: DIR }, (e, out) => {
     const parts = out.split('---BRANCH---');
     const logsRaw = parts[0];
     const rest = parts[1] || '';
     const [branchRaw, changedRest] = rest.split('---CHANGED---');
-    const [changedRaw, statRaw] = (changedRest || '').split('---STAT---');
+    const [changedRaw, statRest] = (changedRest || '').split('---STAT---');
+    const [statRaw, numstatRaw] = (statRest || '').split('---NUMSTAT---');
     
     const changedLines = (changedRaw || '').trim().split('\n').filter(l => l.trim());
     const changesList = changedLines.map(l => {
@@ -56,11 +90,36 @@ function getGitInfo(cb) {
       return { type, file };
     });
 
+    const numstats = {};
+    (numstatRaw || '').trim().split('\n').forEach(l => {
+      const parts = l.trim().split(/\s+/);
+      if (parts.length >= 3) {
+        numstats[parts[2]] = { ins: parts[0], del: parts[1] };
+      }
+    });
+
+    const pStats = getProjectStats();
+    
+    const updatedModulesDetailed = changesList
+      .filter(f => f.file.endsWith('.jsx') || f.file.endsWith('.js') || f.file.endsWith('.css'))
+      .map(f => {
+        const ns = numstats[f.file] || { ins: '0', del: '0' };
+        return {
+          name: path.basename(f.file),
+          path: f.file,
+          type: f.type,
+          ins: ns.ins,
+          del: ns.del
+        };
+      });
+
     cb({
       branch: (branchRaw || '').trim(),
       changedCount: changedLines.length,
       changesList: changesList,
-      stat: (statRaw || '').trim() || 'Không có thay đổi dòng',
+      stat: (statRaw || '').trim() || 'No line changes',
+      pStats,
+      updatedModulesDetailed,
       logs: (logsRaw || '').trim().split('\n').filter(l => l).map(l => {
         const [h, m, t] = l.split('|'); return { h: (h||'').trim(), m: (m||'').trim(), t: (t||'').trim() };
       })
@@ -86,9 +145,34 @@ http.createServer((req, res) => {
 
   } else if (req.url === '/action/test') {
     res.writeHead(200, ok); res.end('ok');
-    // Just open a new CMD window with npm run dev — simple and reliable
-    exec(`start cmd /k "cd /d "${DIR}" && npm run dev"`);
-    broadcast({ type: 'log', text: '⚡ Đã mở cửa sổ Test. Xem trình duyệt tại http://localhost:5173', color: 'ok' });
+    (async () => {
+      await pipeline('test', [
+        { 
+          id: 'check', 
+          label: 'Linting modules & syntax', 
+          run: () => new Promise(resolve => {
+            const p = spawn('cmd', ['/c', 'npm run build'], { cwd: DIR, shell: true });
+            let errText = '';
+            p.stdout.on('data', d => d.toString().split('\n').forEach(l => l.trim() && broadcast({ type: 'log', text: l })));
+            p.stderr.on('data', d => {
+              const str = d.toString();
+              errText += str;
+              str.split('\n').forEach(l => l.trim() && broadcast({ type: 'log', text: l, color: 'err' }));
+            });
+            p.on('close', code => {
+              if (code !== 0) {
+                broadcast({ type: 'log', text: '\n⚠️ CODE ERRORS DETECTED! Please copy the following and send it to me (AI) for a fix:', color: 'err' });
+                const prompt = `I encountered errors during build check, please help me fix it. Error details:\n\`\`\`\n${errText.trim().substring(0, 1500)}\n\`\`\``;
+                broadcast({ type: 'log', text: prompt, color: 'yellow' });
+              } else {
+                broadcast({ type: 'log', text: '\n✅ Code is clean, no module or syntax errors detected!', color: 'ok' });
+              }
+              resolve(code);
+            });
+          })
+        }
+      ]);
+    })();
 
   } else if (req.url === '/action/dev') {
     const body = [];
@@ -96,11 +180,11 @@ http.createServer((req, res) => {
     req.on('end', async () => {
       const { msg } = JSON.parse(Buffer.concat(body).toString() || '{}');
       res.writeHead(200, ok); res.end('ok');
-      const commitMsg = (msg || '').trim() || 'Cap nhat tinh nang';
+      const commitMsg = (msg || '').trim() || 'Update features';
       await pipeline('dev', [
-        { id: 'build',  label: 'Build & kiểm tra lỗi',         run: () => runCmd('npm run build') },
-        { id: 'commit', label: 'Lưu thay đổi (git commit)',     run: () => runCmd(`git add . && git commit -m "${commitMsg}"`) },
-        { id: 'push',   label: 'Đẩy lên nhánh Dev',            run: () => runCmd('git push origin dev') },
+        { id: 'build',  label: 'Build & check errors',         run: () => runCmd('npm run build') },
+        { id: 'commit', label: 'Save changes (git commit)',     run: () => runCmd(`git add . && git commit -m "${commitMsg}"`) },
+        { id: 'push',   label: 'Push to Dev branch',            run: () => runCmd('git push origin dev') },
       ]);
     });
 
@@ -109,9 +193,9 @@ http.createServer((req, res) => {
     req.on('end', async () => {
       res.writeHead(200, ok); res.end('ok');
       await pipeline('main', [
-        { id: 'build', label: 'Build & kiểm tra lỗi lần cuối', run: () => runCmd('npm run build') },
-        { id: 'merge', label: 'Gộp Dev → Main (git merge)',     run: () => runCmd('git checkout main && git merge dev') },
-        { id: 'push',  label: 'Đẩy lên Main — bản chính thức', run: () => runCmd('git push origin main && git checkout dev') },
+        { id: 'build', label: 'Final build & check errors', run: () => runCmd('npm run build') },
+        { id: 'merge', label: 'Merge Dev → Main',     run: () => runCmd('git checkout main && git merge dev') },
+        { id: 'push',  label: 'Push to Main (Production)', run: () => runCmd('git push origin main && git checkout dev') },
       ]);
     });
 

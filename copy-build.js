@@ -1,18 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-// ─── Copy offline build (single-file) ───
-try {
-  fs.copyFileSync('dist-offline/index.html', 'preview_offline.html');
-  console.log('✅ preview_offline.html updated.');
 
-  if (!fs.existsSync('deploy_ready')) fs.mkdirSync('deploy_ready');
-  fs.copyFileSync('dist-offline/index.html', 'deploy_ready/index.html');
-  console.log('✅ deploy_ready/index.html ready for upload.');
-} catch (err) {
-  // Offline build is optional; only warn
-  console.warn('⚠️  Offline build not found, skipping:', err.message);
-}
 
 // ─── Copy .htaccess into dist/ for DirectAdmin deploy ───
 const htaccessSrc = 'public/.htaccess';

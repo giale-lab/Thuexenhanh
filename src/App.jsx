@@ -8,7 +8,7 @@ import imageCompression from "browser-image-compression";
 import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where, limit, orderBy } from "firebase/firestore";
 import "./styles.css";
-import { generateSlug, isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
+import { generateSlug, isWeekendRange, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
 
 import { AppLogo, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel } from './modules/Shared/UIKit.jsx';
 import { SearchLocationPicker, LocationPicker, MapModal, ErrorBoundary, handleOpenMap } from './modules/Shared/Location.jsx';
@@ -21,7 +21,6 @@ import { AccountSettingsScreen, SetLocationPopup } from './modules/Auth/Account.
 import { OwnerWizard, QuyCheModal, DataProtectionPolicy, FaqModal, CommunityModal } from './modules/Auth/Onboarding.jsx';
 import { TopUpModal, UpgradeModal } from './modules/Payment/Tokens.jsx';
 
-import { AdminDashboard } from './modules/Admin/AdminDashboard.jsx';
 
 export default RootApp;
 
@@ -238,8 +237,7 @@ function App() {
           if (userDoc.exists()) {
             const data = userDoc.data();
             let finalRole = data.role;
-            if (ADMIN_EMAILS.includes(firebaseUser.email)) finalRole = 'admin';
-            const userData = {
+                        const userData = {
               ...data,
               uid: firebaseUser.uid,
               name: data.name || firebaseUser.displayName,
@@ -472,14 +470,35 @@ function App() {
 
   if (appLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--m-bg)', color: 'var(--m-dark)', fontFamily: 'sans-serif' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ position: 'relative', width: '56px', height: '56px', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '3.5px solid rgba(0,0,0,0.08)', borderRadius: '50%', borderLeftColor: 'var(--m-blue)', animation: 'spin 1s linear infinite' }}></div>
-            <Car size={26} style={{ color: 'var(--m-blue)' }} />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--m-bg)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div className="bouncing-dot" style={{ animationDelay: '0s' }}></div>
+            <div className="bouncing-dot" style={{ animationDelay: '0.15s' }}></div>
+            <div className="bouncing-dot" style={{ animationDelay: '0.3s' }}></div>
           </div>
-          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--m-dark)' }}>Thuê Xe Nhanh</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--m-primary)', letterSpacing: '2px', textTransform: 'uppercase' }}>
+            LOADING...
+          </div>
+          <style>{`
+            .bouncing-dot {
+              width: 12px;
+              height: 12px;
+              background-color: var(--m-primary);
+              border-radius: 50%;
+              animation: bounce 1.4s infinite ease-in-out both;
+            }
+            @keyframes bounce {
+              0%, 80%, 100% { 
+                transform: scale(0);
+                opacity: 0.3;
+              }
+              40% { 
+                transform: scale(1);
+                opacity: 1;
+              }
+            }
+          `}</style>
         </div>
       </div>
     );
@@ -774,23 +793,29 @@ function App() {
 
 export { App };
 
+import { AdminLayout } from './modules/Admin/AdminLayout.jsx';
+
 function RootApp() {
   const [toast, setToast] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
 
   useEffect(() => {
-    window.showAlert = (msg) => {
-      setToast({ message: msg });
-      setTimeout(() => setToast(null), 4000);
+    window.showAlert = (message) => {
+      setToast({ message });
+      setTimeout(() => setToast(null), 3000);
     };
-    window.showConfirm = (msg, onConfirm) => {
-      setConfirmDialog({ message: msg, onConfirm });
+    window.showConfirm = (message, onConfirm) => {
+      setConfirmDialog({ message, onConfirm });
     };
   }, []);
 
   return (
     <>
-      <App />
+      <Routes>
+        <Route path="/admin/*" element={<AdminLayout />} />
+        <Route path="/*" element={<App />} />
+      </Routes>
+      
       {/* Toast Notification */}
       {toast && (
         <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#1e293b', color: '#fff', padding: '12px 24px', borderRadius: 999, zIndex: 99999, display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 24px rgba(0,0,0,.3)', maxWidth: '90vw', textAlign: 'center', fontSize: 14 }}>
@@ -813,5 +838,4 @@ function RootApp() {
     </>
   );
 }
-
 export { RootApp };

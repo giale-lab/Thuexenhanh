@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase.js';
 import { collection, doc, getDoc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { Trash2, UserPlus, Shield, Loader, Edit3 } from 'lucide-react';
@@ -12,7 +12,7 @@ const ADMIN_ROLES = [
   { value: 'admin_collab', label: 'Cộng tác viên' }
 ];
 
-export function StaffManager({ currentUser }) {
+export function AdminStaff({ currentUser }) {
   const [departments, setDepartments] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
