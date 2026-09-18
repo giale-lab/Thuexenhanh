@@ -23,6 +23,7 @@ function LoginScreen({ onLogin, showToast }) {
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [agreedPolicy, setAgreedPolicy] = useState(false);
+  const [highlightPolicy, setHighlightPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   const [showQuyChe, setShowQuyChe] = useState(false);
 
@@ -34,7 +35,7 @@ function LoginScreen({ onLogin, showToast }) {
 
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
-    if (!agreedPolicy) return toast("Vui lòng đồng ý với Quy chế hoạt động & Chính sách bảo mật");
+    if (!agreedPolicy) return setHighlightPolicy(true); setTimeout(() => setHighlightPolicy(false), 2000);
     if (!phoneNumber) return toast("Vui lòng nhập số điện thoại");
     setIsLoading(true);
     try {
@@ -119,7 +120,7 @@ function LoginScreen({ onLogin, showToast }) {
 
   const handleGoogleLogin = async () => {
     if (!agreedPolicy) {
-      toast("Vui lòng đồng ý với Quy chế hoạt động & Chính sách bảo mật");
+      setHighlightPolicy(true); setTimeout(() => setHighlightPolicy(false), 2000);
       return;
     }
     try {
@@ -193,7 +194,8 @@ function LoginScreen({ onLogin, showToast }) {
                 Đăng nhập bằng Số điện thoại
               </button>
               
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 12, cursor: 'pointer', textAlign: 'left' }}>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 12, cursor: 'pointer', textAlign: 'left', padding: '8px', borderRadius: '8px', background: highlightPolicy ? '#fee2e2' : 'transparent', border: highlightPolicy ? '1px solid #ef4444' : '1px solid transparent', transition: 'all 0.3s', animation: highlightPolicy ? 'shake 0.4s ease-in-out' : 'none' }}>
+                <style>{`@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }`}</style>
                 <input type="checkbox" checked={agreedPolicy} onChange={e => setAgreedPolicy(e.target.checked)} style={{ marginTop: 4, width: 16, height: 16, accentColor: 'var(--m-primary)' }} />
                 <span style={{ fontSize: 12, color: 'var(--m-subtle)', lineHeight: 1.4 }}>
                   Tôi đã đọc và đồng ý với <a href="#" onClick={(e) => { e.preventDefault(); setShowQuyChe(true); }} style={{ color: 'var(--m-primary)', textDecoration: 'none', fontWeight: 500 }}>Quy chế hoạt động</a> &amp; <a href="#" onClick={(e) => { e.preventDefault(); setShowPolicy(true); }} style={{ color: 'var(--m-primary)', textDecoration: 'none', fontWeight: 500 }}>Chính sách bảo mật</a> của Vnigo.

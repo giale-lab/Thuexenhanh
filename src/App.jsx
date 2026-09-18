@@ -506,7 +506,7 @@ function App() {
 
   if (!currentUser) {
     return <LoginScreen 
-      showToast={(msg) => window.showAlert?.(msg) ?? alert(msg)}
+      showToast={(msg) => { if (window.showAlert) window.showAlert(msg); else alert(msg); }}
       onLogin={(user) => {
           setCurrentUser(user);
           localStorage.setItem("web-thue-xe-user", JSON.stringify(user));

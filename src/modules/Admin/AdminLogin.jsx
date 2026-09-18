@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from "../../firebase.js";
 import { doc, getDoc } from "firebase/firestore";
 import { Shield, Loader, Lock, Mail } from 'lucide-react';
@@ -9,6 +9,35 @@ export function AdminLogin({ onLoginSuccess }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+    const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCred = await signInWithPopup(auth, provider);
+      const userRef = doc(db, 'users', userCred.user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        if (userData.role && userData.role.startsWith('admin_')) {
+          onLoginSuccess({ uid: userCred.user.uid, ...userData });
+        } else {
+          setError('Tài khoản của bạn không có quyền truy cập trang quản trị.');
+          auth.signOut();
+        }
+      } else {
+        setError('Không tìm thấy thông tin tài khoản.');
+        auth.signOut();
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Đăng nhập bằng Google thất bại.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -89,6 +118,21 @@ export function AdminLogin({ onLoginSuccess }) {
             {loading ? <Loader className="spin" size={20} /> : 'Đăng nhập'}
           </button>
         </form>
+
+        <div style={{ margin: '20px 0', color: '#94a3b8', fontSize: 14, display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: 1, height: 1, background: '#e2e8f0' }}></div>
+          <span style={{ padding: '0 10px' }}>Hoặc</span>
+          <div style={{ flex: 1, height: 1, background: '#e2e8f0' }}></div>
+        </div>
+
+        <button 
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          style={{ width: '100%', height: 48, background: '#fff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
+        >
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: 18 }} />
+          Đăng nhập bằng Google
+        </button>
 
         <div style={{ marginTop: 24, borderTop: '1px solid #e2e8f0', paddingTop: 24 }}>
           <a href="/" style={{ color: '#3b82f6', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>&larr; Quay lại trang chủ App</a>
