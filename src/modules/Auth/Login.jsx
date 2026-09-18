@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
@@ -7,7 +7,7 @@ import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from '../
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
 import '../../styles.css';
 
-import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
+import { isWeekendRange, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from '../../core.js';
 import { Stat } from '../Shared/UIKit.jsx';
 import { DataProtectionPolicy, QuyCheModal } from './Onboarding.jsx';
 
@@ -73,7 +73,6 @@ function LoginScreen({ onLogin, showToast }) {
       if (userDoc.exists()) {
         const data = userDoc.data();
         let role = data.role;
-        if (user.email && ADMIN_EMAILS.includes(user.email)) role = 'admin';
         window.appLog?.('success', `User cũ: ${user.uid} | role: ${role}`);
         onLogin({
           uid: user.uid,
@@ -90,7 +89,6 @@ function LoginScreen({ onLogin, showToast }) {
         });
       } else {
         let role = "guest";
-        if (user.email && ADMIN_EMAILS.includes(user.email)) role = 'admin';
         window.appLog?.('info', `User mới: ${user.uid} | tạo doc với role: ${role}`);
         const nowIso = new Date().toISOString();
         const newUserData = {

@@ -1,3 +1,4 @@
+import { LandingPage } from './modules/Landing/LandingPage.jsx';
 import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
@@ -772,56 +773,6 @@ function App() {
 }
 
 export { App };
-
-function LandingPage({ onExplore }) {
-  return (
-    <div className="landing-page" style={{ background: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '60px 20px', background: 'linear-gradient(135deg, var(--m-primary) 0%, #1e3a8a 100%)', color: '#fff', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-        <h1 style={{ fontSize: 'clamp(28px, 6vw, 42px)', margin: 0, lineHeight: 1.2, fontWeight: 800, maxWidth: 800 }}>Thuê Xe Tự Lái Chuyên Nghiệp, Giá Rẻ Khắp Việt Nam</h1>
-        <p style={{ fontSize: 'clamp(15px, 3vw, 18px)', margin: 0, maxWidth: 600, lineHeight: 1.5, opacity: 0.9 }}>Nền tảng kết nối trực tiếp chủ xe và người thuê. Không qua trung gian, không phí hoa hồng, thao tác cực nhanh trong 1 phút.</p>
-        <button className="primary-btn" onClick={onExplore} style={{ padding: '14px 32px', fontSize: 18, borderRadius: 100, fontWeight: 700, marginTop: 12, display: 'flex', alignItems: 'center', gap: 8, background: '#fff', color: 'var(--m-primary)', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-          <Search size={20} />
-          Tìm Xe Tự Lái Ngay
-        </button>
-      </div>
-
-      <div style={{ padding: '40px 20px', maxWidth: 1000, margin: '0 auto', width: '100%' }}>
-        <h2 style={{ fontSize: 24, textAlign: 'center', marginBottom: 32, color: 'var(--m-dark)' }}>Tại sao nên chọn Thuê Xe Nhanh?</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 16, border: '1px solid var(--m-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <div style={{ width: 64, height: 64, background: '#f0f9ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--m-primary)' }}><ShieldCheck size={32} /></div>
-            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--m-dark)' }}>0% Phí Hoa Hồng</h3>
-            <p style={{ margin: 0, fontSize: 14, color: 'var(--m-subtle)', lineHeight: 1.5 }}>Thuê Xe Nhanh cam kết không thu phí môi giới từ khách thuê xe tự lái và chủ xe. Bạn luôn nhận được giá thuê ô tô tự lái tốt nhất.</p>
-          </div>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 16, border: '1px solid var(--m-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <div style={{ width: 64, height: 64, background: '#fef2f2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}><MapPin size={32} /></div>
-            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--m-dark)' }}>Tìm Xe Gần Bạn Nhất</h3>
-            <p style={{ margin: 0, fontSize: 14, color: 'var(--m-subtle)', lineHeight: 1.5 }}>Hệ thống định vị thông minh giúp bạn dễ dàng tìm thấy hàng ngàn chiếc xe tự lái đang chờ sẵn ngay trong khu vực của bạn.</p>
-          </div>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 16, border: '1px solid var(--m-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <div style={{ width: 64, height: 64, background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e' }}><BadgeCheck size={32} /></div>
-            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--m-dark)' }}>Thủ Tục Siêu Nhanh</h3>
-            <p style={{ margin: 0, fontSize: 14, color: 'var(--m-subtle)', lineHeight: 1.5 }}>Chỉ cần nhập Token đến và thời gian, trao đổi trực tiếp với chủ xe qua SĐT, chốt hợp đồng và nhận xe ngay tức thì.</p>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ padding: '40px 20px', background: '#fff' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 24, marginBottom: 16, color: 'var(--m-dark)' }}>Hướng Dẫn Cho Thuê Xe Tự Lái & Đi Thuê Xe Tại Thuê Xe Nhanh</h2>
-          <p style={{ fontSize: 15, color: 'var(--m-subtle)', lineHeight: 1.6, marginBottom: 24 }}>Dịch vụ cho thuê xe ô tô tự lái chưa bao giờ đơn giản đến thế. Trải nghiệm ngay với 3 bước:</p>
-          <ul style={{ paddingLeft: 20, fontSize: 15, color: 'var(--m-subtle)', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <li><strong>Bước 1: Tìm thuê xe ô tô:</strong> Sử dụng công cụ tìm kiếm để chọn khu vực, loại xe (4 chỗ, 7 chỗ) phù hợp với nhu cầu thuê xe tự lái của bạn.</li>
-            <li><strong>Bước 2: Chốt xe nhanh:</strong> Gọi điện trực tiếp cho chủ xe để thỏa thuận giá thuê xe tự lái và các thủ tục cần thiết (CCCD, tiền cọc).</li>
-            <li><strong>Bước 3: Nhận xe:</strong> Ký hợp đồng cho thuê xe tự lái, nhận chìa khóa và bắt đầu hành trình tuyệt vời.</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div style={{ flex: 1 }}></div>
-    </div>
-  );
-}
 
 function RootApp() {
   const [toast, setToast] = useState(null);

@@ -8,10 +8,11 @@ import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addD
 import "../../styles.css";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, Line } from 'recharts';
 
-import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from "../../core.js";
+import { isWeekendRange, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from "../../core.js";
 import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from "../../shared.jsx";
 import { Overview, CarCard, CarDetailModal, AddCarForm, DateTimePickerModal, BlockedDatesManager } from "../../cars.jsx";
 import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from "../../auth.jsx";
+import { StaffManager } from "./StaffManager.jsx";
 
 function AdminDashboard({ cars, currentUser, onClose, onDeleteCar }) {
   const [tab, setTab] = useState('stats');
@@ -288,6 +289,9 @@ function AdminDashboard({ cars, currentUser, onClose, onDeleteCar }) {
         <button className={tab === 'feedbacks' ? 'selected' : ''} onClick={() => setTab('feedbacks')}>
           <MessageSquare size={15} style={{ verticalAlign: 'middle', marginRight: 5 }} /> Góp ý
           {feedbacks.filter(r => r.status === 'new').length > 0 && <span style={{ background: 'var(--m-primary)', color: '#fff', borderRadius: 99, fontSize: 11, padding: '1px 6px', marginLeft: 5 }}>{feedbacks.filter(r => r.status === 'new').length}</span>}
+        </button>
+        <button className={tab === 'staff' ? 'selected' : ''} onClick={() => setTab('staff')}>
+          <UserRoundCog size={15} style={{ verticalAlign: 'middle', marginRight: 5 }} /> Nhân sự
         </button>
       </ModuleFrame>
 
@@ -639,6 +643,11 @@ function AdminDashboard({ cars, currentUser, onClose, onDeleteCar }) {
           )}
         </div>
       )}
+
+      {tab === 'staff' && (
+        <StaffManager currentUser={currentUser} />
+      )}
+      
       {selectedCar && <CarDetailModal car={selectedCar} adminMode={true} currentUser={currentUser} onClose={() => setSelectedCar(null)} onEdit={() => { window.showAlert('Vui lòng quay lại giao diện cá nhân để sửa xe.'); setSelectedCar(null); }} />}
     </div>
   );
