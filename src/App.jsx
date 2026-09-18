@@ -1,4 +1,4 @@
-import { LandingPage } from './modules/Landing/LandingPage.jsx';
+﻿import { LandingPage } from './modules/Landing/LandingPage.jsx';
 import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
@@ -598,7 +598,7 @@ function App() {
               {editingId ? "Chỉnh sửa xe" : "Thêm xe mới"}
             </button>
           )}
-          {currentUser.role === 'admin' && (
+          {currentUser.role?.startsWith('admin_') && (
             <button id="tab-admin" className={activeTab === "admin" ? "selected" : ""} onClick={() => navigate('/admin')} style={activeTab === 'admin' ? {} : { color: 'var(--m-mid)' }}>
               <Shield size={17} /> Trang Admin
             </button>
