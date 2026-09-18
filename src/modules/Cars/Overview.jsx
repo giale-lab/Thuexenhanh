@@ -17,9 +17,15 @@ import { DateTimePickerModal } from './CarForm.jsx';
 
 function Overview({ cars, loadMoreCars, hasMoreCars, adminMode, currentUser, showFavorites, onEdit, onDelete, onDuplicate, onStatus, onToggleFavorite, onRequestLocation }) {
   const [query, setQuery] = useState("");
-  const { slugId } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
+  const slugId = useMemo(() => {
+    if (location.pathname.startsWith('/xe/')) {
+      const parts = location.pathname.split('/');
+      return parts[parts.length - 1];
+    }
+    return null;
+  }, [location.pathname]);
+  const navigate = useNavigate();
   
   // Parse query from URL search params instead of pathname
   useEffect(() => {

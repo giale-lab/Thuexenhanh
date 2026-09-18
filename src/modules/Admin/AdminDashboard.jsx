@@ -3,15 +3,15 @@ import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
 import imageCompression from "browser-image-compression";
-import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "./firebase";
+import { auth, db, signInWithGoogle, logout, uploadFile, verifyEmail } from "../../firebase.js";
 import { collection, doc, getDoc, setDoc, deleteDoc, updateDoc, onSnapshot, addDoc, query, where } from "firebase/firestore";
-import "./styles.css";
+import "../../styles.css";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, Line } from 'recharts';
 
-import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from './core.js';
-import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from './shared.jsx';
-import { Overview, CarCard, CarDetailModal, AddCarForm, DateTimePickerModal, BlockedDatesManager } from './cars.jsx';
-import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from './auth.jsx';
+import { isWeekendRange, ADMIN_EMAILS, STORAGE_KEY, carModelsData, brandOptions, colorOptions, seatOptions, yearOptions, bodyStyleOptions, AMENITY_OPTIONS, provinceDistricts, locationProvinces, locationOptions, operatingAreaOptions, seedCars, emptyForm, getFieldGroups, formatCompactDateTime, formatShortDate, getDaysInMonth, getFirstDayOfMonth, toLocalKey, VN_DAYS, fmtRangeDate, fmtRangeLabel, getCarWeight, sorters, inferSmartFilters, activeChips, validateCar, getOwnerInfo, phoneDigits, blobToDataUrl, getAtPath, setAtPath, clone, normalizeCarForm, normalize, unique, formatCurrency, fmtNum, statusText, formatBusyDates, today, delay } from "../../core.js";
+import { AppLogo, SearchLocationPicker, ErrorBoundary, LazyImage, SkeletonCard, ImageSlider, ModuleFrame, StatusBadge, Field, Toggle, LocationPicker, DepositField, FilterCheckboxGroup, FilterToggle, FilterSelect, Stat, ImageUploadOptimizer, InfoPanel, MapModal, handleOpenMap } from "../../shared.jsx";
+import { Overview, CarCard, CarDetailModal, AddCarForm, DateTimePickerModal, BlockedDatesManager } from "../../cars.jsx";
+import { LoginScreen, AccountSettingsScreen, QuyCheModal, TopUpModal, OwnerWizard, SetLocationPopup, UpgradeModal, FaqModal, CommunityModal, DataProtectionPolicy } from "../../auth.jsx";
 
 function AdminDashboard({ cars, currentUser, onClose, onDeleteCar }) {
   const [tab, setTab] = useState('stats');

@@ -18,3 +18,4 @@
 > **LƯU Ý DÀNH CHO AI**: Mỗi khi kết thúc một cuộc hội thoại hoặc có thay đổi logic lớn, bạn BẮT BUỘC phải ghi chú lại vào đây bằng tiếng Việt ngắn gọn để đồng bộ với các AI ở luồng khác. Tránh lặp lại kiến thức đã có.
 
 - [2026-09] Khởi tạo module. Đã cấu trúc kiến trúc đa luồng.
+- [2026-09] Fix lỗi bấm vào thẻ xe không hiện thông tin chi tiết (Lỗi do `Overview.jsx` dùng `useParams()` không hợp lệ với kiến trúc không khai báo `<Route>`). Đã thay thế bằng parse trực tiếp từ `location.pathname`.

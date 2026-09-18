@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import * as LucideIcons from 'lucide-react';
 const { Sparkles, Loader, Download, Info, BadgeCheck, CalendarDays, Car, Check, ChevronDown, Copy, Edit3, Eye, Filter, Gauge, ImagePlus, LayoutGrid, List, MapPin, RefreshCcw, Save, Search, ShieldCheck, Star, Trash2, Upload, UserRoundCog, X, HelpCircle, ChevronLeft, ChevronRight, LogOut, Heart, MessageSquare, Zap, Settings, Users, User, Shield, Bell, TrendingUp, Package, CheckCircle2, Clock, XCircle, ThumbsUp, ThumbsDown, Reply, Send, AlertTriangle, ShieldAlert, Share2, Link2, Phone, Flag, ArrowRight, SlidersHorizontal, ArrowUpDown, ArrowUpCircle } = LucideIcons;
 
@@ -15,7 +16,22 @@ import { TopUpModal } from '../Payment/Tokens.jsx';
 import { OwnerWizard, DataProtectionPolicy } from './Onboarding.jsx';
 
 function AccountSettingsScreen({ user, onClose, onSave, cars, onToggleFavorite, onAdmin }) {
-  const [currentView, setCurrentView] = useState("menu");
+  const navigate = useNavigate();
+  const routerLocation = useLocation();
+  const currentView = useMemo(() => {
+    const path = routerLocation.pathname;
+    if (path === '/cai-dat/ho-so') return 'profile';
+    if (path === '/cai-dat/xe-yeu-thich') return 'favorites';
+    if (path === '/cai-dat/xe-da-mo') return 'unlocked_cars';
+    if (path === '/cai-dat/danh-gia') return 'reviews';
+    if (path === '/cai-dat/cong-dong') return 'community';
+    if (path === '/cai-dat/gop-y') return 'feedback';
+    if (path === '/cai-dat/chinh-sach') return 'policy';
+    if (path === '/cai-dat/chinh-sach-chi-tiet') return 'policy_details';
+    if (path === '/cai-dat/mien-tru') return 'disclaimer';
+    if (path === '/cai-dat/tranh-chap') return 'ugc';
+    return 'menu';
+  }, [routerLocation.pathname]);
   const [name, setName] = useState(user.name || "");
   const [feedbackText, setFeedbackText] = useState("");
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
@@ -85,32 +101,23 @@ function AccountSettingsScreen({ user, onClose, onSave, cars, onToggleFavorite, 
     onCloseRef.current = onClose;
   }, [onClose]);
 
-  const currentViewRef = useRef(currentView);
-  useEffect(() => {
-    currentViewRef.current = currentView;
-  }, [currentView]);
 
-  useEffect(() => {
-    window.history.pushState({ modal: "AccountSettingsScreen", view: "menu" }, "");
-    const handlePopState = (e) => {
-      if (e.state && e.state.modal === "AccountSettingsScreen") {
-        setCurrentView(e.state.view || "menu");
-      } else {
-        if (onCloseRef.current) onCloseRef.current();
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      if (window.history.state && window.history.state.modal === "AccountSettingsScreen") {
-        window.history.back();
-      }
-    };
-  }, []);
 
   const changeView = (view) => {
-    window.history.pushState({ modal: "AccountSettingsScreen", view }, "");
-    setCurrentView(view);
+    const map = {
+      profile: '/cai-dat/ho-so',
+      favorites: '/cai-dat/xe-yeu-thich',
+      unlocked_cars: '/cai-dat/xe-da-mo',
+      reviews: '/cai-dat/danh-gia',
+      community: '/cai-dat/cong-dong',
+      feedback: '/cai-dat/gop-y',
+      policy: '/cai-dat/chinh-sach',
+      policy_details: '/cai-dat/chinh-sach-chi-tiet',
+      disclaimer: '/cai-dat/mien-tru',
+      ugc: '/cai-dat/tranh-chap',
+      menu: '/cai-dat'
+    };
+    if (map[view]) navigate(map[view]);
   };
 
   const goBackView = () => {
@@ -772,7 +779,7 @@ function AccountSettingsScreen({ user, onClose, onSave, cars, onToggleFavorite, 
             }
             onClose();
           }}
-          onGoToProfile={() => setCurrentView("profile")} 
+          onGoToProfile={() => changeView("profile")} 
           isGuest={user.isGuest} 
           isComplete={isProfileComplete} 
         />

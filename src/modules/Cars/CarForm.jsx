@@ -13,7 +13,15 @@ import { LocationPicker } from '../Shared/Location.jsx';
 import { UpgradeModal } from '../Payment/Tokens.jsx';
 
 function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
-  const [form, setForm] = useState(() => editingCar ? normalizeCarForm(editingCar) : clone(emptyForm));
+  const [form, setForm] = useState(() => {
+    if (editingCar) return normalizeCarForm(editingCar);
+    const newForm = clone(emptyForm);
+    if (currentUser) {
+      newForm.ownerInfo.name = currentUser.name || "";
+      newForm.ownerInfo.phone = currentUser.phone || currentUser.phoneNumber || "";
+    }
+    return newForm;
+  });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [packageType, setPackageType] = useState("premium");
@@ -26,10 +34,17 @@ function AddCarForm({ editingCar, currentUser, onSave, onCancel }) {
   const [activeTab, setActiveTab] = useState('info');
 
   useEffect(() => {
-    setForm(editingCar ? normalizeCarForm(editingCar) : clone(emptyForm));
+    setForm(editingCar ? normalizeCarForm(editingCar) : (() => {
+      const newForm = clone(emptyForm);
+      if (currentUser) {
+        newForm.ownerInfo.name = currentUser.name || "";
+        newForm.ownerInfo.phone = currentUser.phone || currentUser.phoneNumber || "";
+      }
+      return newForm;
+    })());
     setPackageType("premium");
     setErrors({});
-  }, [editingCar]);
+  }, [editingCar, currentUser]);
 
   const setPathValue = (path, value) => {
     setForm((current) => {

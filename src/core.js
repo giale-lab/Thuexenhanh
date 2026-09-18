@@ -472,7 +472,7 @@ function validateCar(form, packageType = "full") {
     if (!form.technicalInfo.fuel) errors["technicalInfo.fuel"] = "Chá»n loáº¡i nhiÃªn liá»‡u.";
       
     if (!form.technicalInfo.transmission) errors["technicalInfo.transmission"] = "Chá»n há»™p sá»‘.";
-      if (!form.technicalInfo.fuelConsumption) errors["technicalInfo.fuelConsumption"] = "Chá»n má»©c tiÃªu hao nhiÃªn liá»‡u.";
+      if (form.technicalInfo.fuel !== 'Ä iá»‡n' && !form.technicalInfo.fuelConsumption) errors["technicalInfo.fuelConsumption"] = "Chá»n má»©c tiÃªu hao nhiÃªn liá»‡u.";
   }
   
   if (!Number(form.rentalInfo.dayPrice)) errors["rentalInfo.dayPrice"] = "GiÃ¡ thuÃª ngÃ y pháº£i lÃ  sá»‘ há»£p lá»‡.";

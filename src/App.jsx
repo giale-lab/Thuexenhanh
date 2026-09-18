@@ -20,7 +20,7 @@ import { AccountSettingsScreen, SetLocationPopup } from './modules/Auth/Account.
 import { OwnerWizard, QuyCheModal, DataProtectionPolicy, FaqModal, CommunityModal } from './modules/Auth/Onboarding.jsx';
 import { TopUpModal, UpgradeModal } from './modules/Payment/Tokens.jsx';
 
-import { AdminDashboard } from './admin.jsx';
+import { AdminDashboard } from './modules/Admin/AdminDashboard.jsx';
 
 export default RootApp;
 
@@ -52,16 +52,13 @@ function App() {
   const location = useLocation();
   const activeTab = useMemo(() => {
     if (location.pathname === '/dang-xe') return 'add';
-    if (location.pathname === '/cai-dat') return 'account';
+    if (location.pathname.startsWith('/cai-dat')) return 'account';
     if (location.pathname === '/admin') return 'admin';
     if (location.pathname === '/trang-chu') return 'overview';
     if (location.pathname.startsWith('/xe/')) return 'overview';
     return 'landing';
   }, [location.pathname]);
   const [editingId, setEditingId] = useState(null);
-  
-  const [showFaq, setShowFaq] = useState(false);
-  const [showCommunity, setShowCommunity] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
 
@@ -747,15 +744,15 @@ function App() {
               {!isInstalled && (
                  <button onClick={handleInstallClick} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>📲 Tải ứng dụng</button>
               )}
-              <button onClick={() => setShowCommunity(true)} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>🛡️ Cộng đồng</button>
-              <button onClick={() => setShowFaq(true)} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>❓ FAQ - Hỏi đáp</button>
+              <button onClick={() => navigate('/cong-dong')} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>🛡️ Cộng đồng</button>
+              <button onClick={() => navigate('/faq')} className="secondary" style={{ fontSize: 13, height: 36, padding: '0 12px', background: 'transparent' }}>❓ FAQ - Hỏi đáp</button>
             </div>
           </div>
         </div>
       </footer>
 
-      {showFaq && <FaqModal onClose={() => setShowFaq(false)} />}
-      {showCommunity && <CommunityModal currentUser={currentUser} onClose={() => setShowCommunity(false)} />}
+      {location.pathname === '/faq' && <FaqModal onClose={() => navigate(-1)} />}
+      {location.pathname === '/cong-dong' && <CommunityModal currentUser={currentUser} onClose={() => navigate(-1)} />}
 
       {/* Confirm Modal */}
       {confirmDialog && (
